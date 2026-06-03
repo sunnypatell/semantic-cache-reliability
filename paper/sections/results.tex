@@ -59,7 +59,8 @@ the other, so it cannot react to the specific pair in front of it, which is the 
 adversarial domain exploits. A cross-encoder reads both prompts jointly and could, in
 principle, catch a word-scrambled near-duplicate, so it is the obvious fix and the natural
 \emph{verification} layer the rest of this paper recommends. We measure an off-the-shelf
-semantic-similarity cross-encoder on the same pairs; it cannot itself be the cache, because it
+semantic-similarity cross-encoder (\texttt{stsb-roberta-base}; \cref{app:modelcards}) on the
+same pairs; it cannot itself be the cache, because it
 scores each pair on the fly and cannot be indexed, but it sets the ceiling a verifier could
 reach. It is the single strongest method on news (\prauc{} $0.92$) and matches the bi-encoders
 on questions, yet on the adversarial domain it collapses to \prauc{} $0.51$, below the lexical

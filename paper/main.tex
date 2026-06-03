@@ -112,7 +112,7 @@
 
 %% --- Title -------------------------------------------------------------------
 \title{\bfseries When Semantic Caches Lie\\[5pt]
-{\normalfont\large Why One Similarity Threshold Cannot Make an LLM Cache Both Safe and Useful}}
+{\normalfont\large Why One Similarity Threshold Cannot Make an LLM Cache Both Safe and Useful Across Domains}}
 \author{Sunny Patel\,\orcidlink{0009-0005-3863-7642}%
 \thanks{\raggedright Copyright \textcopyright{} 2026 Sunny Patel. All rights reserved; the
 manuscript and its figures are the author's intellectual property, released for reproduction
@@ -137,9 +137,10 @@ measure, and the cache fails exactly where the two diverge. Grounding this
 \emph{cache-equivalence} in human-labeled prompt pairs, we map the false-hit rate of six
 sentence embeddings across three domains with bootstrap confidence intervals. The sharpest
 finding is an inversion: on adversarial near-duplicates a classical lexical baseline separates
-equivalent from non-equivalent prompts better than every neural encoder, and better than a
-joint cross-encoder verifier, because the surface-form insensitivity that makes an embedding
-useful is what blinds it to a word-scrambled paraphrase; a larger encoder barely helps. Holding
+equivalent from non-equivalent prompts better than every neural encoder, because the
+surface-form insensitivity that makes an embedding useful is what blinds it to a word-scrambled
+paraphrase; even a joint cross-encoder verifier does not recover the case, and a larger encoder
+barely helps. Holding
 the false-hit rate under one percent caps coverage near nine percent on the easiest domain and
 under one percent elsewhere. Under a realistic penalty a fixed threshold costs several times
 more than not caching, while a threshold calibrated to the measured cost recovers near-baseline
