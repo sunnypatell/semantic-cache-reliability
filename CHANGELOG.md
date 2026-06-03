@@ -12,6 +12,12 @@ All notable changes to this project are documented here. The format is based on
   datasheet), and `data/processed/SHA256SUMS` (data fixity manifest).
 - Completed `CITATION.cff`: ORCID, version, release date, and a `preferred-citation`
   block so citation tools resolve to the manuscript, not just the software.
+- Calibration figure in the paper body and the transfer and precision-recall figures
+  in the appendix, all from the existing calibration data.
+- Continuous integration: the model-free metric and statistics tests, plus a data
+  integrity check, run on every push and pull request.
+- Repository presentation: a hero figure in the README, an issue template, accurate
+  language statistics (`.gitattributes`), and complete `pyproject` metadata.
 
 ### Changed
 - LaTeX preamble hygiene: black author-note mark (`hyperfootnotes=false`), `bookmark`
