@@ -1,0 +1,46 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Semantic caching for language models.}
+Systems that reuse model outputs by embedding similarity have moved quickly from prototype
+to production. \mbox{GPTCache} established the pattern of encoding a query, retrieving its
+nearest stored neighbor, and serving the neighbor's response above a similarity
+threshold~\cite{bang2023gptcache}. Later work improved the hit rate and the threshold
+itself: \mbox{MeanCache} personalizes the decision with federated
+learning~\cite{gill2024meancache}, category-aware caching sets different thresholds for
+different query types~\cite{wang2025categoryaware}, and domain-specific embeddings sharpen
+the similarity signal with synthetic fine-tuning data~\cite{gill2025advancing}. The work
+closest to ours is \mbox{vCache}, which learns a per-prompt threshold online from
+correctness feedback and bounds the error rate with a statistical
+guarantee~\cite{schroeder2025vcache}. These systems share an objective: maximize reuse
+subject to keeping answers correct, where correctness is judged on the served queries.
+
+\paragraph{What has not been measured.}
+The literature reports hit rates, latency, and, in the case of verified caching, a bound on
+error~\cite{schroeder2025vcache,gill2024meancache}. It does not chart how the benign
+false-hit rate moves across embedding models and domains, it does not follow a false hit
+into the quality of the downstream task, and it does not turn the cost of a false hit into
+an operating point. Our contribution is orthogonal to building a better cache: we measure
+the failure that every similarity cache shares and calibrate against its measured cost.
+The one study that probes these caches adversarially shows that an attacker can craft
+collisions that force false hits~\cite{zhang2026keycollision}; we ask the complementary
+question of how often the same failure occurs without an adversary.
+
+\paragraph{Embeddings and their evaluation.}
+The encoders we audit are standard sentence embedding models trained with contrastive
+objectives: Sentence-BERT and its \mbox{MPNet} backbone~\cite{reimers2019sentencebert,song2020mpnet},
+the weakly supervised \mbox{E5} models~\cite{wang2022e5}, and the \mbox{BGE} models from the
+\mbox{C-Pack} release~\cite{xiao2023cpack}, all of which rank highly on the Massive Text
+Embedding Benchmark~\cite{muennighoff2023mteb}. Our labeled domains come from human-annotated
+paraphrase and duplicate-question corpora~\cite{wang2019glue,dolan2005mrpc,zhang2019paws}
+rather than from semantic-similarity regression~\cite{cer2017sts}, because the question a
+cache must answer is binary equivalence, not graded similarity.
+
+\paragraph{Measurement methodology.}
+We follow the empirical-rigor practices that the evaluation literature has converged on:
+confidence intervals from the bias-corrected and accelerated
+bootstrap~\cite{efron1987bootstrap,efron1993bootstrap}, multiple-comparison correction by
+controlling the false discovery rate~\cite{benjamini1995fdr}, and significance testing
+chosen for the structure of the data rather than by default~\cite{dror2018hitchhiker}. We
+document the data and the models with a datasheet and model cards in the
+spirit of~\cite{gebru2021datasheets,mitchell2019modelcards}.

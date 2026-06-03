@@ -23,10 +23,21 @@ New-Item -ItemType Directory -Force $build | Out-Null
 # excluding build artifacts and diagnostics. robocopy exit codes 0-7 mean success.
 $null = robocopy $src $build /E /NJH /NJS /NDL /NFL /NP /XF *.aux *.log *.bbl *.bcf *.blg *.fdb_latexmk *.fls *.run.xml *.synctex.gz *.out latexmk.run.txt p1.o.txt p1.e.txt p2.o.txt p2.e.txt /XD _diag
 
+# Tell latexmk to call pdflatex with --disable-installer so MiKTeX never tries to
+# fetch a package (which would raise an admin/UAC prompt). All needed packages are
+# already installed, so builds succeed; a genuinely missing one errors fast instead.
+$latexmkrc = @'
+$pdflatex = 'pdflatex --disable-installer -interaction=nonstopmode -file-line-error %O %S';
+$pdf_mode = 1;
+$bibtex_use = 2;
+$max_repeat = 5;
+'@
+Set-Content -Path (Join-Path $build 'latexmkrc') -Value $latexmkrc -Encoding ascii
+
 Push-Location $build
 if ($Clean) { cmd /c "latexmk -C main.tex > nul 2>&1" }
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
-cmd /c "latexmk -pdf -interaction=nonstopmode -file-line-error main.tex > latexmk.run.txt 2>&1"
+cmd /c "latexmk -pdf main.tex > latexmk.run.txt 2>&1"
 $code = $LASTEXITCODE
 $sw.Stop()
 Pop-Location

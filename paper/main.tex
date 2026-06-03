@@ -49,8 +49,14 @@
 
 %% --- Hyperlinks (bare, then \hypersetup) then cleveref ----------------------
 \usepackage{hyperref}
+\definecolor{linknavy}{rgb}{0.10,0.20,0.45}
+\definecolor{citegreen}{rgb}{0.00,0.34,0.20}
+\definecolor{urlblue}{rgb}{0.10,0.22,0.55}
 \hypersetup{
-  hidelinks,
+  colorlinks=true,
+  linkcolor=linknavy,   % internal cross-references (sections, figures, equations)
+  citecolor=citegreen,  % citations
+  urlcolor=urlblue,     % external links
   breaklinks=true,
   pdftitle={When Semantic Caches Lie: False Hits, Downstream Cost, and Calibration},
   pdfauthor={Sunny Patel},
@@ -73,10 +79,14 @@
 %% --- Title -------------------------------------------------------------------
 \title{\bfseries When Semantic Caches Lie:\\ False Hits, Downstream Cost, and Calibration\\[2pt]
 \large in Embedding-Based Caching for Large Language Models}
-\author{Sunny Patel\thanks{Copyright \textcopyright{} 2026 Sunny Patel. All rights reserved.
-This manuscript and its figures are the author's intellectual property; see the project
-license. Correspondence: \texttt{sunnypatel124555@gmail.com}.}\\[2pt]
-\small Independent Researcher}
+\author{Sunny Patel%
+\thanks{Copyright \textcopyright{} 2026 Sunny Patel. All rights reserved. This manuscript and
+its figures are the author's intellectual property; see the project license.
+{ORCID}: \href{https://orcid.org/0009-0005-3863-7642}{0009-0005-3863-7642}.
+Correspondence: \texttt{sunnypatel124555@gmail.com}. Website: \url{https://www.sunnypatel.net}.
+Code and data: \url{https://github.com/sunnypatell/semantic-cache-reliability}.}\\[2pt]
+\small Independent Researcher, Toronto, Canada \\[1pt]
+\small \href{https://orcid.org/0009-0005-3863-7642}{ORCID 0009-0005-3863-7642}}
 \date{}
 
 \begin{document}
@@ -106,6 +116,21 @@ they give practitioners a principled way to set one.
 
 \input{sections/setup}
 
+\input{sections/results}
+
+\input{sections/downstream}
+
+\input{sections/calibration}
+
+\input{sections/related}
+
+\input{sections/discussion}
+
+\input{sections/conclusion}
+
 \printbibliography
+
+\appendix
+\input{sections/appendix}
 
 \end{document}

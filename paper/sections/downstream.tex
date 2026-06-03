@@ -1,0 +1,30 @@
+\section{What a false hit costs downstream}
+\label{sec:downstream}
+
+A false-hit rate is only as important as the damage a false hit does once it is served.
+Whether that damage is severe or absorbed depends on where the cache sits. A cache on the
+final answer returns the wrong answer outright. A cache earlier in the pipeline, for example
+on the retrieved context of a retrieval-augmented generator, hands a downstream model a wrong
+premise and lets it recover or compound the error.
+
+\paragraph{Protocol.}
+We measure both positions by controlled fault injection on a retrieval-augmented question
+answering task. For each test question we run the generator twice: once with its correct
+context or answer, and once after injecting a false hit, in which the cache substitutes the
+stored response of a \emph{non-equivalent} earlier query drawn from the same labeled pool. We
+vary the injected false-hit rate over $\{1, 2, 5, 10\}\%$ and report the resulting drop in
+end-to-end answer quality (exact match and token~$F_1$, with a semantic-similarity check to
+credit near-misses). To show the conclusion does not depend on how a false hit is
+manufactured, we use three injection models: substituting a confident wrong answer, a
+truncated answer, and a plausible answer to a different question.
+
+\paragraph{Findings.}
+\pending{False hits propagate with task- and position-dependent severity. A false hit on the
+final answer costs the full answer; a false hit on the retrieved context costs $X$ of task
+$F_1$ per injected point because the generator sometimes overrides a wrong premise.}
+\pending{Across injection models the per-point cost is stable to within $Y$, so the
+trade-off the next section calibrates against is robust to the exact failure mode.} The
+practical reading is that the same false-hit rate is not equally tolerable everywhere: a
+cache deep in a forgiving pipeline can run a looser threshold than a cache that speaks
+directly to the user, and the calibration in \cref{sec:calibration} turns that observation
+into a number.

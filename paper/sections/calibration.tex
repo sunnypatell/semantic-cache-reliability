@@ -1,0 +1,44 @@
+\section{Calibrating the threshold to cost}
+\label{sec:calibration}
+
+The frontier in \cref{sec:results} shows the trade-off; it does not pick a point on it.
+Picking the point is the threshold-setting problem, and the right point depends on how much a
+false hit costs relative to a miss. A miss recomputes an answer the cache could have reused,
+costing one model call. A false hit serves a wrong answer, costing the downstream damage
+measured in \cref{sec:downstream} plus, often, the eventual recomputation. The two are not
+symmetric, and the asymmetry is the whole decision.
+
+\paragraph{Policies.}
+We compare three ways of choosing the per-encoder threshold, each fit on a calibration split
+and evaluated on a held-out test split of the same domain. The \emph{fixed} policy uses a
+single hand-set similarity value, the common default. The \emph{ceiling} policy chooses the
+lowest threshold whose calibration false-hit rate stays under a target, the strategy of
+correctness-bounding caches such as verified caching~\cite{schroeder2025vcache}. Our
+\emph{cost-aware} policy chooses the threshold that minimizes expected cost,
+\begin{equation}
+  C(\thr) \;=\; \frac{c_{\mathrm{fh}}\,\mathrm{FP}(\thr) + \big(\mathrm{TN}(\thr)+\mathrm{FN}(\thr)\big)}{N},
+  \label{eq:cost}
+\end{equation}
+where a correct hit saves a call, a miss costs one, and a false hit costs $c_{\mathrm{fh}}$
+calls, the penalty estimated in \cref{sec:downstream}. The only domain-specific input is the
+measured penalty, so the policy needs no per-prompt online feedback.
+
+\paragraph{Results.}
+\pending{Under an asymmetric penalty, the cost-aware policy lowers expected cost relative to
+both the fixed default and the ceiling policy by $X$ on average, with the gap widening as the
+penalty grows, because the fixed and ceiling policies ignore the cost ratio that the
+cost-aware policy optimizes.} \pending{Against verified caching's online per-prompt
+thresholds, our static cost-aware threshold matches its reliability while removing the need
+for correctness feedback, at a cost of $Y$ in coverage.} We summarize the comparison in
+\cref{tab:calibration}.
+
+\paragraph{Transfer.}
+A threshold is only useful if it survives a change of domain. \pending{Calibrating the
+cost-aware policy on one domain and applying it to another raises expected cost by only $Z$
+relative to calibrating in-domain, provided the embedding model is held fixed; transfer fails
+when the model changes, which is consistent with the cross-encoder incomparability of cosine
+scores.} The recommendation that follows is concrete: recalibrate when the encoder changes,
+but a threshold learned on one domain is a usable starting point for a related one.
+
+% Generated from results/calibration_summary.csv by experiments/make_tables.py
+\input{tables/calibration_table}

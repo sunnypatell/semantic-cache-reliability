@@ -1,0 +1,77 @@
+\section{Model cards}
+\label{app:modelcards}
+
+\Cref{tab:modelcards} records the six encoders. Each is used through the
+Sentence-Transformers interface with mean pooling and $L_2$-normalized output. The two
+\mbox{E5} models are queried with the recommended \texttt{query:} prefix for symmetric
+similarity; the others take the raw text. Exact weight revisions are pinned in the released
+code so that the numbers reproduce against fixed checkpoints.
+
+\begin{table}[t]
+  \centering
+  \begin{threeparttable}
+    \caption{The six audited encoders. Dimensions and parameter counts are the published
+      values for each checkpoint.}
+    \label{tab:modelcards}
+    \begin{tabular}{l r r l l}
+      \toprule
+      Model & Params (M) & Dim & License & Hugging Face identifier \\
+      \midrule
+      MiniLM-L6   &  22.7 &  384 & Apache-2.0 & \texttt{sentence-transformers/all-MiniLM-L6-v2} \\
+      MPNet-base  & 109.0 &  768 & Apache-2.0 & \texttt{sentence-transformers/all-mpnet-base-v2} \\
+      E5-small    &  33.0 &  384 & MIT        & \texttt{intfloat/e5-small-v2} \\
+      E5-large    & 335.0 & 1024 & MIT        & \texttt{intfloat/e5-large-v2} \\
+      BGE-base    & 109.0 &  768 & MIT        & \texttt{BAAI/bge-base-en-v1.5} \\
+      BGE-large   & 335.0 & 1024 & MIT        & \texttt{BAAI/bge-large-en-v1.5} \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+\section{Datasheet for the cache-equivalence set}
+\label{app:datasheet}
+
+\paragraph{Motivation.}
+The set exists to evaluate whether an embedding cache's similarity decision matches a human
+notion of when two prompts may share an answer. It was assembled by the author for this study.
+
+\paragraph{Composition.}
+Each instance is a pair of short English texts with a binary label: cache-equivalent or not.
+The pairs are sampled from three public, human-annotated corpora,
+\mbox{2500} pairs each: Quora Question Pairs (duplicate questions)~\cite{wang2019glue}, the
+Microsoft Research Paraphrase Corpus (news paraphrase)~\cite{dolan2005mrpc}, and \mbox{PAWS}
+(adversarial word-scrambled paraphrase)~\cite{zhang2019paws}. Base rates of the equivalent
+class are $0.36$, $0.68$, and $0.44$ respectively. Exact-duplicate and empty pairs are
+removed so that trivial matches do not inflate the positive class.
+
+\paragraph{Collection and labeling.}
+Labels are inherited from the source corpora's human annotations; we did not relabel. Sampling
+is uniform within each corpus under a fixed seed, preserving the natural base rate. The exact
+sampled pairs are released as CSV files.
+
+\paragraph{Uses and limits.}
+The set is intended for measuring cache reliability and calibrating thresholds. Its labels
+encode paraphrase and duplication, which proxy answer-equivalence imperfectly
+(\cref{sec:threats}); it should not be read as a gold standard for answer-equivalence in any
+specific application. The source corpora carry their own licenses, which the released code
+records; the derived labels and sampling are the author's work.
+
+\section{Reproducibility}
+\label{app:repro}
+
+All experiments run on CPU with fixed seeds. The released repository pins dependency versions,
+provides the exact commands that regenerate every table and figure from the raw scores, and
+records per-encoder wall-clock time and the negligible monetary cost (embedding inference is
+local; no paid API is used for the reliability study). A single entry point reproduces the
+full pipeline: build the labeled set, score it with each encoder, compute the bootstrap
+intervals, and render the figures.
+
+\section{Preregistration}
+\label{app:prereg}
+
+Before the main run we registered the research questions, the primary metric (\prauc{} under
+class imbalance, with the false-hit/coverage frontier as the operating-point view), the
+encoders and domains, the sample size of \mbox{2500} pairs per domain, the bootstrap
+procedure and the multiple-comparison correction, and the rule that all cross-encoder
+comparison would use threshold-free metrics. Deviations from the plan, if any, are reported
+with their rationale in the released materials.

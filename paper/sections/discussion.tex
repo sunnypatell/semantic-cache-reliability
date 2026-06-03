@@ -1,0 +1,70 @@
+\section{Threats to validity}
+\label{sec:threats}
+
+\paragraph{Construct validity.}
+The central risk is the one we have been explicit about: our labels encode paraphrase and
+question-duplication, and we read them as cache-equivalence. The two come apart at the
+edges. Two duplicate questions can warrant slightly different answers in context, and two
+non-paraphrases can occasionally share an answer. We accept this gap deliberately, because
+the alternative, bespoke answer-equivalence annotation at scale, would trade a transparent,
+reproducible label for a private one. The direction of the bias also works in our favor for
+the central claim: \mbox{PAWS} pairs are labeled by humans as \emph{non}-paraphrases despite
+near-identical wording, so counting a high-similarity \mbox{PAWS} non-paraphrase as a
+potential false hit is conservative, not generous. The numbers should be read as the
+reliability of the similarity proxy against a human notion of sameness, which is the proxy a
+deployed cache actually relies on.
+
+\paragraph{Internal validity.}
+Cosine scores are not comparable across encoders, so every cross-encoder statement uses
+threshold-free metrics (\prauc{}, \rocauc{}), and every threshold is calibrated per encoder
+(\cref{sec:calibration}). Within an encoder, the false-hit rate and coverage are exact
+functions of the score distributions, so there is no estimator variance beyond sampling,
+which the bootstrap intervals capture.
+
+\paragraph{External validity.}
+We measure three domains and six encoders, and the specific numbers will not transfer
+verbatim to a new corpus or a next-generation embedding. The contribution that does transfer
+is the method: define cache-equivalence, collect a labeled pair set for the target domain,
+read the false-hit/coverage frontier, and calibrate the threshold to the measured cost. We
+designed the study so that re-running it on a new encoder is a single command. The
+adversarial domain is intentionally a worst case rather than an average one; real traffic
+will sit between the news and adversarial frontiers, and where it sits is itself something a
+deployment can measure with this protocol.
+
+\paragraph{Conclusion validity.}
+All intervals are $95\%$ bias-corrected and accelerated bootstrap intervals over pairs, the
+many comparisons are corrected for the false discovery rate, and the analysis plan was
+preregistered before the main run. Effect sizes accompany the significance tests so that a
+reliable difference is not mistaken for a large one.
+
+\section{Limitations}
+\label{sec:limitations}
+
+The study is offline and pairwise. It measures the quality of the similarity decision, not
+the dynamics of a live cache, so cache size, eviction, and the time-evolution of the stored
+set are out of scope; the false-hit rate we report is a property of the decision rule that
+any such system inherits. We do not evaluate exact-match or two-tier caches as separability
+baselines, because our pairs are non-identical by construction and an exact-match layer
+never fires on them; a two-tier system simply adds our semantic layer on top of a free exact
+layer, so our frontier is the part that governs its risk. The downstream cost in
+\cref{sec:downstream} comes from controlled fault injection rather than from a production
+incident log, and we report it under several injection models to show the conclusion does
+not hinge on one.
+
+\section{Broader impact}
+\label{sec:impact}
+
+A false hit is a silent error: the system returns a confident answer that no log flags as
+wrong. In low-stakes settings this trades a little quality for a large cost saving, which is
+the point of caching. In settings where a wrong answer carries real cost, such as health,
+legal, or financial guidance, the same mechanism can serve stale or incorrect information
+without any signal to the user. Our results argue that such systems should not run a single
+global similarity threshold; they should calibrate per domain to a false-hit ceiling tied to
+the cost of being wrong, and they should monitor the served stream rather than trust it.
+Embedding caches also have a documented adversarial surface: an attacker who can shape
+prompts can manufacture collisions that force false hits~\cite{zhang2026keycollision}. Our
+study quantifies the benign version of the same failure, and the defense is aligned in both
+cases, namely a verification step or a conservative, cost-aware threshold rather than blind
+trust in similarity. On the other side of the ledger, caching reduces the compute and energy
+of repeated inference, and a more reliable cache lets a system claim that saving without
+silently degrading the answers it serves.

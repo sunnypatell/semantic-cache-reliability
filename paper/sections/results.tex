@@ -1,0 +1,92 @@
+\section{How often the proxy fails}
+\label{sec:results}
+
+We report separability first, because it does not depend on a chosen threshold, then the
+false-hit/coverage trade-off (\cref{fig:frontier}), the score distributions that explain it,
+and the operating points a deployment would actually run.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_frontier}
+  \caption{The cost of safety. Each curve sweeps the similarity threshold for one encoder;
+    the vertical axis is coverage (the fraction of queries served) and the horizontal axis
+    is the false-hit rate among those served. Up-and-to-the-left is better. The dashed line
+    marks a $1\%$ false-hit ceiling. On questions and news, low-error operation costs most
+    of the coverage; on the adversarial domain (right) the frontier collapses toward the
+    diagonal, where coverage can be bought only by accepting an almost equal rate of wrong
+    answers. Bands are $95\%$ bootstrap intervals.}
+  \label{fig:frontier}
+\end{figure}
+
+\subsection{Separability across models and domains}
+\label{sec:results-auc}
+\Cref{fig:heatmap} summarizes threshold-free separability as \prauc{} for every
+encoder--domain pair. Two patterns hold across all six encoders. First, the domain matters
+more than the model: \pending{the spread across domains for a fixed encoder is larger than
+the spread across encoders for a fixed domain}. Second, the adversarial domain is close to
+unsolved: \pending{the best encoder reaches only \prauc${}=X$ on \mbox{PAWS}, against a base
+rate of $0.44$, and its \rocauc{} of $Y$ is barely above the $0.5$ of chance}. Larger
+encoders help, but the gain is small next to the domain gap: \pending{moving from the
+smallest to the largest model raises \mbox{PAWS} \prauc{} by only $Z$}. The lexical control
+\pending{trails the neural encoders on questions and news but is competitive on
+\mbox{PAWS}, where neither lexical overlap nor learned semantics separates the classes}.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.82\linewidth]{figures/fig_heatmap}
+  \caption{Threshold-free separability (\prauc{}) for each encoder and domain. Higher is
+    better; the base rate of equivalent pairs is $0.36$ (questions), $0.68$ (news), and
+    $0.44$ (adversarial). The adversarial column stays near the floor for every encoder.}
+  \label{fig:heatmap}
+\end{figure}
+
+% Generated from results/reliability_summary.csv by experiments/make_tables.py
+\input{tables/separability_table}
+
+\subsection{The false-hit/coverage frontier}
+\label{sec:results-frontier}
+\Cref{fig:frontier} reads the same data as an operating curve. To hold the false-hit rate
+under $1\%$, a deployment must move far up the threshold, and coverage falls with it:
+\pending{on questions the best encoder serves only X\% of traffic at a $1\%$ ceiling; on
+news, Y\%; on the adversarial domain, essentially none}. The shape of the news frontier is
+the most forgiving because its pairs are the least lexically confusable; the adversarial
+frontier is the warning, because it is the case a real cache will meet whenever two prompts
+differ in a small but decisive word.
+
+\subsection{Why: the grey zone}
+\label{sec:results-greyzone}
+\Cref{fig:scores} shows where the failure comes from. For the strongest encoder, the
+similarity scores of equivalent and non-equivalent pairs are well separated on questions
+but pile into the same narrow, high band on the adversarial domain. \pending{On
+\mbox{PAWS}, the median similarity of non-equivalent pairs is within $\delta$ of the median
+of equivalent pairs, so no threshold can divide them.} A cache cannot act on a distinction
+its encoder does not represent, and on adversarial near-duplicates the encoder does not
+represent it.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_score_overlap}
+  \caption{Similarity-score distributions for equivalent (blue) and non-equivalent (orange)
+    pairs, for the strongest encoder, across the three domains. Separation on questions
+    becomes near-total overlap on the adversarial domain, where both classes concentrate
+    above $0.96$.}
+  \label{fig:scores}
+\end{figure}
+
+\subsection{Operating points}
+\label{sec:results-operating}
+\Cref{fig:coverage} states the headline as a single number per encoder and domain: the
+coverage a cache can deliver while keeping its false-hit rate at or below $1\%$.
+\pending{Across encoders the achievable coverage at a $1\%$ ceiling is X--Y\% on questions,
+A--B\% on news, and below C\% on the adversarial domain.} The practitioner's takeaway is
+blunt: a single global threshold chosen for a clean domain will leak false hits in a harder
+one, and there is no threshold that makes the adversarial domain both safe and useful.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_coverage_bars}
+  \caption{Coverage achievable at a $1\%$ false-hit ceiling, per encoder and domain. Bars
+    are $95\%$ bootstrap intervals. Even the strongest encoder serves only a small share of
+    questions and news under the ceiling, and almost nothing on the adversarial domain.}
+  \label{fig:coverage}
+\end{figure}

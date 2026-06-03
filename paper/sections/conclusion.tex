@@ -1,0 +1,15 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+A semantic cache bets that two prompts which look alike can share an answer. We measured how
+often that bet loses when no one is attacking it. Separating cache-equivalence from
+similarity and labeling it with human judgments, we mapped the false-hit rate of six
+embedding models across three domains, traced a false hit into the task it corrupts, and
+calibrated the threshold to the cost of being wrong. The picture is sober. On clean domains
+a cache can be kept honest, but only by surrendering most of its coverage; on adversarial
+near-duplicates the similarity signal carries almost no information about equivalence, and no
+threshold makes the cache both safe and useful. The remedy is not a better single number but
+a deliberate one: calibrate per domain against a false-hit ceiling set by what a wrong answer
+costs, and verify rather than trust. We release the labeled data, the harness, and the exact
+commands so that any team can run the same measurement on its own encoder and its own
+traffic before it decides what its cache is allowed to guess.
