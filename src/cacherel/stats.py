@@ -2,7 +2,7 @@
 # Copyright (c) 2026 Sunny Patel. All rights reserved.
 """Uncertainty quantification and inference for cache-reliability experiments.
 
-Design choices, each defended in research/CONVENTIONS.md:
+Design choices:
   * Confidence intervals use the bias-corrected and accelerated (BCa) bootstrap,
     which corrects for skew and bias that the percentile bootstrap ignores. This
     matters because the false-hit rate is a rare-event proportion whose sampling
