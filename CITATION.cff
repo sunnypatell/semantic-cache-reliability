@@ -1,15 +1,18 @@
 cff-version: 1.2.0
+message: "If you use this software or dataset, please cite the article below."
 title: "When Semantic Caches Lie: False Hits, Downstream Cost, and Calibration in Embedding-Based Caching for Large Language Models"
-message: "If you use this software or dataset, please cite it as below."
 type: software
+version: 0.1.0
+date-released: 2026-06-03
 authors:
   - family-names: Patel
     given-names: Sunny
     email: sunnypatel124555@gmail.com
     affiliation: Independent Researcher
+    orcid: "https://orcid.org/0009-0005-3863-7642"
 repository-code: "https://github.com/sunnypatell/semantic-cache-reliability"
+url: "https://www.sunnypatel.net"
 license-url: "https://github.com/sunnypatell/semantic-cache-reliability/blob/main/LICENSE"
-copyright: "Copyright (c) 2026 Sunny Patel. All rights reserved."
 keywords:
   - semantic caching
   - large language models
@@ -17,3 +20,26 @@ keywords:
   - false-hit rate
   - calibration
   - retrieval-augmented generation
+# identifiers:        # uncomment and fill once the arXiv / Zenodo DOI is minted at release
+#   - type: doi
+#     value: 10.48550/arXiv.XXXX.XXXXX
+#     description: "arXiv preprint DOI"
+#   - type: doi
+#     value: 10.5281/zenodo.XXXXXXX
+#     description: "Zenodo archive of the code and dataset"
+preferred-citation:
+  type: article
+  title: "When Semantic Caches Lie: False Hits, Downstream Cost, and Calibration in Embedding-Based Caching for Large Language Models"
+  authors:
+    - family-names: Patel
+      given-names: Sunny
+      orcid: "https://orcid.org/0009-0005-3863-7642"
+      affiliation: Independent Researcher
+  year: 2026
+  # Fill the venue/identifier once posted (keep the DOI a TODO until it resolves):
+  # journal: "arXiv preprint"
+  # identifiers:
+  #   - type: other
+  #     value: "arXiv:XXXX.XXXXX"
+  #   - type: doi
+  #     value: 10.48550/arXiv.XXXX.XXXXX

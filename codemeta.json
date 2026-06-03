@@ -1,0 +1,40 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "cacherel",
+  "description": "Measurement and cost-aware calibration for embedding-based semantic caching of large language model outputs: false-hit rate, downstream cost, and threshold calibration across encoders and domains.",
+  "version": "0.1.0",
+  "dateCreated": "2026-06-03",
+  "datePublished": "2026-06-03",
+  "programmingLanguage": "Python",
+  "runtimePlatform": "Python 3.12",
+  "codeRepository": "https://github.com/sunnypatell/semantic-cache-reliability",
+  "license": "https://github.com/sunnypatell/semantic-cache-reliability/blob/main/LICENSE",
+  "copyrightHolder": {
+    "@type": "Person",
+    "givenName": "Sunny",
+    "familyName": "Patel"
+  },
+  "copyrightYear": 2026,
+  "keywords": [
+    "semantic caching",
+    "large language models",
+    "embedding models",
+    "false-hit rate",
+    "calibration",
+    "retrieval-augmented generation"
+  ],
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Sunny",
+      "familyName": "Patel",
+      "email": "sunnypatel124555@gmail.com",
+      "@id": "https://orcid.org/0009-0005-3863-7642",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Independent Researcher"
+      }
+    }
+  ]
+}
