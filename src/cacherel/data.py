@@ -51,12 +51,14 @@ class PairSet:
         return list(self.a) + list(self.b)
 
 
+# Canonical namespaced Hub repositories (datasets 4.x / huggingface_hub 1.x require
+# 'namespace/name' identifiers; the bare 'glue'/'paws' names no longer resolve).
 _SPECS = {
-    "qqp": dict(path="glue", config="qqp", split="train",
+    "qqp": dict(path="nyu-mll/glue", config="qqp", split="train",
                 fa="question1", fb="question2", flabel="label"),
-    "paws": dict(path="paws", config="labeled_final", split="train",
+    "paws": dict(path="google-research-datasets/paws", config="labeled_final", split="train",
                  fa="sentence1", fb="sentence2", flabel="label"),
-    "mrpc": dict(path="glue", config="mrpc", split="train",
+    "mrpc": dict(path="nyu-mll/glue", config="mrpc", split="train",
                  fa="sentence1", fb="sentence2", flabel="label"),
 }
 

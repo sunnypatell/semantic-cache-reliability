@@ -1,0 +1,2 @@
+dataset,encoder,n_pairs,base_rate,pr_auc,pr_auc_lo,pr_auc_hi,roc_auc,roc_auc_lo,roc_auc_hi,prec@rec0.70,prec@rec0.80,prec@rec0.90,cov@fhr0.01,cov@fhr0.05
+mrpc,all-MiniLM-L6-v2,1000,0.682,0.8647,0.8365,0.8869,0.7574,0.7282,0.7896,0.8304,0.8009,0.7599,0.102,0.148

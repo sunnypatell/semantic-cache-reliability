@@ -85,13 +85,23 @@ def main() -> None:
         print(f"[data] {name}: n={len(ps)} base_rate={ps.base_rate:.3f}")
 
     summary: list[dict] = []
+    summary_path = ROOT / "results" / "reliability_summary.csv"
 
-    def run_encoder(enc, label: str) -> None:
+    def flush_summary() -> None:
+        # Persist after every report so an interruption never loses completed work.
+        pd.DataFrame(summary).to_csv(summary_path, index=False, encoding="utf-8")
+
+    def process(enc, label: str) -> None:
         for name, ps in pairsets.items():
             t0 = time.time()
-            rep = reliability_report(enc, ps, n_boot=args.n_boot, seed=args.seed)
+            try:
+                rep = reliability_report(enc, ps, n_boot=args.n_boot, seed=args.seed)
+            except Exception as exc:  # keep the run alive; record and move on
+                print(f"[skip] {label:28s} x {name:5s} ERROR: {exc}")
+                continue
             _save_json(rep.to_json(), RESULTS / f"{name}__{rep.encoder}.json")
             summary.append(_summary_row(rep))
+            flush_summary()
             print(
                 f"[run] {label:28s} x {name:5s} "
                 f"PR-AUC={rep.pr_auc['estimate']:.3f} "
@@ -100,26 +110,33 @@ def main() -> None:
             )
 
     for spec in specs:
-        enc = SentenceEncoder(**spec)
-        run_encoder(enc, enc.name)
+        try:
+            enc = SentenceEncoder(**spec)
+        except Exception as exc:
+            print(f"[skip] could not load {spec['model_name']}: {exc}")
+            continue
+        process(enc, enc.name)
         del enc
         gc.collect()
 
     if not args.no_lexical:
         for name, ps in pairsets.items():
             enc = LexicalEncoder()
-            t0 = time.time()
-            rep = reliability_report(enc, ps, n_boot=args.n_boot, seed=args.seed)
+            try:
+                rep = reliability_report(enc, ps, n_boot=args.n_boot, seed=args.seed)
+            except Exception as exc:
+                print(f"[skip] tfidf-lexical x {name}: {exc}")
+                continue
             _save_json(rep.to_json(), RESULTS / f"{name}__{rep.encoder}.json")
             summary.append(_summary_row(rep))
+            flush_summary()
             print(f"[run] {'tfidf-lexical':28s} x {name:5s} "
                   f"PR-AUC={rep.pr_auc['estimate']:.3f} ({time.time() - t0:.1f}s)")
 
-    df = pd.DataFrame(summary)
-    out = ROOT / "results" / "reliability_summary.csv"
-    df.to_csv(out, index=False, encoding="utf-8")
-    print(f"\n[done] {len(summary)} reports -> {out}")
-    print(df.to_string(index=False))
+    flush_summary()
+    print(f"\n[done] {len(summary)} reports -> {summary_path}")
+    if summary:
+        print(pd.DataFrame(summary).to_string(index=False))
 
 
 if __name__ == "__main__":

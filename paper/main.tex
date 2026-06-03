@@ -19,15 +19,19 @@
 \usepackage[charter]{newtxmath}
 
 %% --- Microtypography ---------------------------------------------------------
-\usepackage[protrusion=true,expansion=true,final]{microtype}
+% Protrusion (character protrusion into the margin) is the larger visual win and is
+% cheap; font expansion is disabled because generating expanded Type1 instances for the
+% many newtx symbol fonts is pathologically slow at this font count.
+\usepackage[protrusion=true,expansion=false,final]{microtype}
 
 %% --- Geometry & spacing ------------------------------------------------------
 \usepackage[margin=1in]{geometry}
 
 %% --- Tables ------------------------------------------------------------------
+%% Numbers are pre-formatted to a fixed number of decimals by the table-generation
+%% code and right-aligned, which aligns the decimal points cleanly. (siunitx's S
+%% columns interact pathologically slowly with the newtx math fonts in this toolchain.)
 \usepackage{booktabs}
-\usepackage{siunitx}
-\sisetup{detect-all=true,separate-uncertainty=true,table-align-uncertainty=true}
 \usepackage{threeparttable}
 
 %% --- Graphics & figures ------------------------------------------------------
@@ -101,13 +105,13 @@ generation~\cite{rag2020}.
   \begin{threeparttable}
     \caption{Smoke-test table: baseline comparison structure.}
     \label{tab:smoke}
-    \begin{tabular}{l S[table-format=2.1] S[table-format=2.1] S[table-format=3.0]}
+    \begin{tabular}{l r r r}
       \toprule
-      Method & {FHR (\%)} & {Hit rate (\%)} & {Latency (ms)} \\
+      Method & FHR (\%) & Hit rate (\%) & Latency (ms) \\
       \midrule
-      Exact hash          & 0.0  & 18.0 & 2 \\
-      Two-tier exact+sem. & 0.4  & 42.0 & 7 \\
-      Cross-encoder rerank & 0.5 & 50.0 & 41 \\
+      Exact hash            & 0.0 & 18.0 &  2 \\
+      Two-tier exact+sem.   & 0.4 & 42.0 &  7 \\
+      Cross-encoder rerank  & 0.5 & 50.0 & 41 \\
       \addlinespace
       Our calibrated policy & 0.3 & 66.0 & 12 \\
       \bottomrule
