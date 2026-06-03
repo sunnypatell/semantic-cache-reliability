@@ -247,13 +247,23 @@ def fig_coverage_bars(reports) -> None:
     width = 0.26
     fig, ax = plt.subplots(figsize=(6.9, 2.6))
     for j, dom in enumerate(DOMAIN_ORDER):
-        vals = []
+        vals, lo_err, hi_err = [], [], []
         for enc in encs:
             rep = reports.get((dom, enc))
-            v = rep["coverage_at_max_fhr"]["0.01"]["estimate"] if rep else np.nan
-            vals.append(v)
+            if rep:
+                ci = rep["coverage_at_max_fhr"]["0.01"]
+                est = ci["estimate"]
+                vals.append(est)
+                # Asymmetric 95% BCa bootstrap interval (estimate is not the midpoint of a
+                # skewed rare-event rate), clipped so a degenerate bound never draws below zero.
+                lo_err.append(max(0.0, est - ci.get("low", est)))
+                hi_err.append(max(0.0, ci.get("high", est) - est))
+            else:
+                vals.append(np.nan); lo_err.append(0.0); hi_err.append(0.0)
         ax.bar(x + (j - 1) * width, vals, width, label=DOMAIN_LABEL[dom],
-               color=OKABE_ITO[j], edgecolor="black", linewidth=0.4)
+               color=OKABE_ITO[j], edgecolor="black", linewidth=0.4,
+               yerr=[lo_err, hi_err],
+               error_kw=dict(elinewidth=0.6, capsize=1.5, capthick=0.6, ecolor="0.25"))
     ax.set_xticks(x)
     ax.set_xticklabels([ENCODER_LABEL[e] for e in encs], rotation=25, ha="right")
     ax.set_ylabel(r"coverage at FHR $\leq$ 1%")
