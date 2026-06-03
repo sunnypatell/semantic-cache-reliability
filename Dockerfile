@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
+# Copyright (c) 2026 Sunny Patel. All rights reserved.
 # Reproducible environment for the experiments, figures, and tables.
 # (The LaTeX build is separate; see build.ps1 / README. This image reproduces the data.)
 FROM python:3.12-slim
