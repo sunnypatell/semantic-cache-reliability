@@ -1,0 +1,32 @@
+Copyright (c) 2026 Sunny Patel. All rights reserved.
+
+This repository contains the manuscript, source code, figures, and dataset for the
+research project "When Semantic Caches Lie" by Sunny Patel (Independent Researcher).
+All of it is the author's original intellectual property. Authorship and priority are
+established by the public, timestamped arXiv record (DOI) and the author's ORCID.
+
+PAPER AND FIGURES
+  The manuscript text and figures are the copyrighted work of Sunny Patel. When posted to
+  arXiv they are distributed under arXiv's non-exclusive license to distribute; the author
+  retains full copyright. They may be read and cited with proper attribution. They may not
+  be redistributed, mirrored, modified, translated, or republished, in whole or in
+  substantial part, without the author's prior written permission. Presenting this work, or
+  any substantial part of it, as one's own is plagiarism.
+
+SOURCE CODE
+  The code is provided source-available so that the results can be independently reproduced
+  and verified. You may download and run it for that purpose. Any other use, including
+  redistribution, modification for release, or incorporation into other software or
+  publications, requires the author's prior written permission and must credit Sunny Patel.
+
+DATASET
+  The labeled cache-equivalence dataset is the author's work, provided for non-commercial
+  research use with attribution. Redistribution requires the author's prior written
+  permission.
+
+ATTRIBUTION
+  Cite this work as specified in CITATION.cff.
+
+THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO
+EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE
+USE OF THESE MATERIALS.

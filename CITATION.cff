@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+title: "When Semantic Caches Lie: False Hits, Downstream Cost, and Calibration in Embedding-Based Caching for Large Language Models"
+message: "If you use this software or dataset, please cite it as below."
+type: software
+authors:
+  - family-names: Patel
+    given-names: Sunny
+    email: sunnypatel124555@gmail.com
+    affiliation: Independent Researcher
+repository-code: "https://github.com/sunnypatell/semantic-cache-reliability"
+license-url: "https://github.com/sunnypatell/semantic-cache-reliability/blob/main/LICENSE"
+copyright: "Copyright (c) 2026 Sunny Patel. All rights reserved."
+keywords:
+  - semantic caching
+  - large language models
+  - embedding models
+  - false-hit rate
+  - calibration
+  - retrieval-augmented generation

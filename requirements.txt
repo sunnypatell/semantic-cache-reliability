@@ -1,0 +1,23 @@
+# Core scientific stack
+numpy>=1.26,<2.3
+scipy>=1.11
+pandas>=2.1
+scikit-learn>=1.4
+matplotlib>=3.8
+
+# Embeddings / retrieval
+sentence-transformers>=3.0
+faiss-cpu>=1.8
+rank-bm25>=0.2.2
+
+# Statistics / agreement
+statsmodels>=0.14
+krippendorff>=0.6
+
+# Data + utilities
+datasets>=2.19
+pyyaml>=6.0
+tqdm>=4.66
+
+# Multi-model gateway (chat completions for fault-injection responses)
+g4f>=0.3

@@ -1,0 +1,40 @@
+# Diamond-standard matplotlib style: figure text matches the paper body (XCharter)
+# usetex calls latex+dvipng directly (no perl/latexmk needed).
+text.usetex: True
+text.latex.preamble: \usepackage[T1]{fontenc}\usepackage{XCharter}\usepackage[charter]{newtxmath}
+font.family: serif
+font.size: 9
+axes.labelsize: 9
+axes.titlesize: 9
+legend.fontsize: 8
+xtick.labelsize: 8
+ytick.labelsize: 8
+
+# Single-column width ~3.3in, golden-ratio height
+figure.figsize: 3.3, 2.04
+figure.dpi: 150
+savefig.dpi: 300
+savefig.format: pdf
+savefig.bbox: tight
+savefig.pad_inches: 0.02
+
+# Spare, Tufte-leaning axes
+axes.linewidth: 0.6
+axes.spines.top: False
+axes.spines.right: False
+xtick.direction: in
+ytick.direction: in
+xtick.major.width: 0.6
+ytick.major.width: 0.6
+xtick.major.size: 3
+ytick.major.size: 3
+lines.linewidth: 1.2
+lines.markersize: 4
+legend.frameon: False
+
+# Okabe-Ito colorblind-safe categorical cycle (no leading # in mplstyle)
+axes.prop_cycle: cycler('color', ['E69F00','56B4E9','009E73','F0E442','0072B2','D55E00','CC79A7','000000'])
+
+# Embedded TrueType fonts in PDF/PS
+pdf.fonttype: 42
+ps.fonttype: 42
