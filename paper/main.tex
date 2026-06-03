@@ -1,3 +1,5 @@
+% SPDX-License-Identifier: LicenseRef-Proprietary
+% Copyright (c) 2026 Sunny Patel. All rights reserved.
 %% ============================================================================
 %% When Semantic Caches Lie
 %% Independent research paper by Sunny Patel
@@ -83,6 +85,7 @@
 \definecolor{urlblue}{rgb}{0.10,0.22,0.55}
 \hypersetup{
   colorlinks=true,
+  hyperfootnotes=false, % author-note (*) mark on the title stays black, not a colored link
   linkcolor=linknavy,   % internal cross-references (sections, figures, equations)
   citecolor=citegreen,  % citations
   urlcolor=urlblue,     % external links
@@ -90,9 +93,12 @@
   pdflang=en,
   pdftitle={When Semantic Caches Lie: False Hits, Downstream Cost, and Calibration},
   pdfauthor={Sunny Patel},
+  pdfsubject={Reliability and cost-aware calibration of embedding-based semantic caching for large language models},
   pdfkeywords={semantic caching, large language models, embedding models, false-hit rate, calibration, retrieval}
 }
 \usepackage{cleveref}
+%% bookmark (loaded after hyperref/cleveref) writes a robust, correctly-nested PDF outline.
+\usepackage{bookmark}
 
 %% --- Author identity marks (clickable ORCID iD + icon links, no bare URLs) ---
 \usepackage{orcidlink}
@@ -109,6 +115,7 @@
 %% --- Widow/orphan control ----------------------------------------------------
 \widowpenalty=10000
 \clubpenalty=10000
+\frenchspacing  % single inter-sentence spacing (Bringhurst/Butterick), the modern standard
 
 %% --- Title -------------------------------------------------------------------
 \title{\bfseries When Semantic Caches Lie\\[5pt]
