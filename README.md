@@ -4,6 +4,14 @@
 
 An independent research project by **Sunny Patel** ([ORCID 0009-0005-3863-7642](https://orcid.org/0009-0005-3863-7642), [sunnypatel.net](https://www.sunnypatel.net)).
 
+[![License: All Rights Reserved](https://img.shields.io/badge/license-All%20Rights%20Reserved-red.svg)](LICENSE)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0005--3863--7642-a6ce39.svg)](https://orcid.org/0009-0005-3863-7642)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
+<!-- Replace the IDs and uncomment at release:
+[![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
+-->
+
 > A semantic cache reuses a stored answer whenever a new prompt's embedding is close enough
 > to an earlier one, trading a model call for a lookup. This project asks the question the
 > literature has mostly skipped: when the closeness test is wrong, what does it cost? We
@@ -45,6 +53,23 @@ tests/            Unit tests for metrics and statistics
 
 Requirements: Python 3.12, and (for the paper) a TeX distribution with `biber`.
 
+**Linux / macOS (bash):**
+
+```bash
+# 1. Environment
+python3 -m venv .venv && source .venv/bin/activate
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt && pip install -e .
+
+# 2. Reproduce every result, figure, and table (CPU only)
+python experiments/run_all.py
+
+# 3. Compile the paper (needs a TeX distribution with biber)
+latexmk -pdf -cd paper/main.tex
+```
+
+**Windows (PowerShell):**
+
 ```powershell
 # 1. Environment
 python -m venv .venv ; .\.venv\Scripts\Activate.ps1
@@ -70,7 +95,17 @@ all rights reserved; see [`LICENSE`](LICENSE). The paper and figures retain full
 reproduction and verification only; the dataset is for non-commercial research use with
 attribution. Any reuse, redistribution, or derivative work requires written permission and
 must credit the author. Authorship and priority are established by the public, timestamped
-arXiv record and ORCID.
+arXiv record and ORCID. The dataset is derived from third-party corpora (QQP, MRPC, PAWS)
+that retain their own licenses; the author claims rights only over the equivalence labels,
+sampling, and arrangement, not the underlying source text (see [`NOTICE.md`](NOTICE.md)).
+
+## Data and code availability
+
+All code, the labeled cache-equivalence dataset, and the scripts that regenerate every table
+and figure live in this repository and are versioned (`v0.1.0`); data integrity is verifiable
+with `shasum -a 256 -c data/processed/SHA256SUMS`. The dataset is derived from the public QQP,
+MRPC, and PAWS corpora, which retain their own licenses (see [`NOTICE.md`](NOTICE.md)). An
+archival DOI (Zenodo) and the arXiv record will be linked here on release.
 
 ## Citation
 
