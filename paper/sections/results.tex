@@ -14,7 +14,8 @@ and the operating points a deployment would actually run.
     marks a $1\%$ false-hit ceiling. On questions and news, low-error operation costs most
     of the coverage; on the adversarial domain (right) the frontier collapses toward the
     diagonal, where coverage can be bought only by accepting an almost equal rate of wrong
-    answers. Bands are $95\%$ bootstrap intervals.}
+    answers. Bootstrap intervals on the headline operating point are shown in
+    \cref{fig:coverage}.}
   \label{fig:frontier}
 \end{figure}
 
@@ -52,6 +53,21 @@ blinds it to an adversarial paraphrase.
 % Generated from results/reliability_summary.csv by experiments/make_tables.py
 \input{tables/separability_table}
 
+\paragraph{A cross-encoder verifier does not rescue the hard case.}
+A bi-encoder is handicapped by construction: it commits each prompt to a vector before it sees
+the other, so it cannot react to the specific pair in front of it, which is the blindness the
+adversarial domain exploits. A cross-encoder reads both prompts jointly and could, in
+principle, catch a word-scrambled near-duplicate, so it is the obvious fix and the natural
+\emph{verification} layer the rest of this paper recommends. We measure an off-the-shelf
+semantic-similarity cross-encoder on the same pairs; it cannot itself be the cache, because it
+scores each pair on the fly and cannot be indexed, but it sets the ceiling a verifier could
+reach. It is the single strongest method on news (\prauc{} $0.92$) and matches the bi-encoders
+on questions, yet on the adversarial domain it collapses to \prauc{} $0.51$, below the lexical
+control and barely above the $0.44$ base rate (\cref{tab:separability}). Joint attention helps
+where meaning and surface form already agree; it does not recover the case where they diverge.
+The difficulty of the adversarial domain is a property of the equivalence judgment, not an
+artifact of the bi-encoder architecture, and a verification layer inherits it.
+
 \subsection{The false-hit/coverage frontier}
 \label{sec:results-frontier}
 \Cref{fig:frontier} reads the same data as an operating curve. To hold the false-hit rate
@@ -77,10 +93,13 @@ near-duplicates the encoder does not represent it.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/fig_score_overlap}
-  \caption{Similarity-score distributions for equivalent (blue) and non-equivalent (orange)
-    pairs, for the strongest encoder, across the three domains. Separation on questions
-    becomes near-total overlap on the adversarial domain, where both classes concentrate
-    above $0.96$.}
+  \caption{The grey zone. Similarity-score distributions for equivalent (blue) and
+    non-equivalent (orange) pairs, for the strongest encoder. The dashed line is the threshold
+    that retains $90\%$ of equivalent pairs; the shaded band to its right is the false-hit
+    zone, the non-equivalent mass a cache at that threshold would serve. Clean separation on
+    questions (median gap $0.19$) becomes near-total overlap on the adversarial domain (median
+    gap $0.011$, both classes above $0.97$), where the false-hit zone swallows most of the
+    non-equivalent pairs.}
   \label{fig:scores}
 \end{figure}
 
@@ -89,7 +108,8 @@ near-duplicates the encoder does not represent it.
 \Cref{fig:coverage} states the headline as a single number per encoder and domain: the
 coverage a cache can deliver while keeping its false-hit rate at or below $1\%$. Across
 encoders the achievable coverage is under $1\%$ on questions, between roughly $0.5\%$ and
-$9\%$ on news, and below $0.5\%$ on the adversarial domain. The practitioner's takeaway is
+$9\%$ on news, and below $0.5\%$ on the adversarial domain; \cref{tab:fullresults} gives the
+full operating-point matrix behind these numbers. The practitioner's takeaway is
 blunt: a single global threshold chosen for a clean domain will leak false hits in a harder
 one, and there is no threshold that makes the adversarial domain both safe and useful.
 

@@ -25,7 +25,19 @@
 \usepackage[protrusion=true,expansion=false,final]{microtype}
 
 %% --- Geometry & spacing ------------------------------------------------------
-\usepackage[margin=1in]{geometry}
+%% A slightly tighter measure (~72 characters) reads better than the article default.
+\usepackage[letterpaper,margin=1.1in]{geometry}
+
+%% --- Running head + first-page preprint footer -------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\scshape\footnotesize When Semantic Caches Lie}
+\fancyhead[R]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\fancypagestyle{firstpage}{%
+  \fancyhf{}\renewcommand{\headrulewidth}{0pt}%
+  \fancyfoot[L]{\footnotesize Preprint.}\fancyfoot[R]{\footnotesize\thepage}}
 
 %% --- Tables ------------------------------------------------------------------
 %% Numbers are pre-formatted to a fixed number of decimals by the table-generation
@@ -33,12 +45,29 @@
 %% columns interact pathologically slowly with the newtx math fonts in this toolchain.)
 \usepackage{booktabs}
 \usepackage{threeparttable}
+\usepackage{dcolumn}            % decimal-aligned numeric columns (siunitx is too slow with newtx)
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+%% --- Algorithms (classic algorithmic + algorithm float; caption honours the en-dash labelsep) ---
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
 %% --- Graphics & figures ------------------------------------------------------
 \usepackage{graphicx}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[labelsep=endash,font=small]{caption}
+\captionsetup[algorithm]{labelsep=endash}% match the algorithm float caption to the floats
 \usepackage{subcaption}
+
+%% --- Diagrams (TikZ) and the shared semantic color language --------------------
+%% The conceptual figures reuse the Okabe-Ito hues of the data figures so that the
+%% colour meaning (equivalent=green, false hit=vermillion, structural=blue) is constant.
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,backgrounds,fit}
+\definecolor{eqgreen}{HTML}{009E73}
+\definecolor{fhred}{HTML}{D55E00}
+\definecolor{neutral}{HTML}{0072B2}
+\providecommand{\Description}[1]{}% no-op alt-text hook (forward-compatible with tagged PDF)
 
 %% --- Lists & quotes ----------------------------------------------------------
 \usepackage{enumitem}
@@ -58,11 +87,16 @@
   citecolor=citegreen,  % citations
   urlcolor=urlblue,     % external links
   breaklinks=true,
+  pdflang=en,
   pdftitle={When Semantic Caches Lie: False Hits, Downstream Cost, and Calibration},
   pdfauthor={Sunny Patel},
   pdfkeywords={semantic caching, large language models, embedding models, false-hit rate, calibration, retrieval}
 }
 \usepackage{cleveref}
+
+%% --- Author identity marks (clickable ORCID iD + icon links, no bare URLs) ---
+\usepackage{orcidlink}
+\usepackage{fontawesome5}
 
 %% --- Bibliography ------------------------------------------------------------
 \usepackage[backend=biber,style=numeric-comp,sorting=nyt,sortcites=true,
@@ -77,43 +111,53 @@
 \clubpenalty=10000
 
 %% --- Title -------------------------------------------------------------------
-\title{\bfseries When Semantic Caches Lie:\\ False Hits, Downstream Cost, and Calibration\\[2pt]
-\large in Embedding-Based Caching for Large Language Models}
-\author{Sunny Patel%
-\thanks{Copyright \textcopyright{} 2026 Sunny Patel. All rights reserved. This manuscript and
-its figures are the author's intellectual property; see the project license.
-{ORCID}: \href{https://orcid.org/0009-0005-3863-7642}{0009-0005-3863-7642}.
-Correspondence: \texttt{sunnypatel124555@gmail.com}. Website: \url{https://www.sunnypatel.net}.
-Code and data: \url{https://github.com/sunnypatell/semantic-cache-reliability}.}\\[2pt]
-\small Independent Researcher, Toronto, Canada \\[1pt]
-\small \href{https://orcid.org/0009-0005-3863-7642}{ORCID 0009-0005-3863-7642}}
+\title{\bfseries When Semantic Caches Lie\\[5pt]
+{\normalfont\large Why One Similarity Threshold Cannot Make an LLM Cache Both Safe and Useful}}
+\author{Sunny Patel\,\orcidlink{0009-0005-3863-7642}%
+\thanks{\raggedright Copyright \textcopyright{} 2026 Sunny Patel. All rights reserved; the
+manuscript and its figures are the author's intellectual property, released for reproduction
+only (see the project license). Correspondence:
+\href{mailto:sunnypatel124555@gmail.com}{\nolinkurl{sunnypatel124555@gmail.com}}.}\\[3pt]
+\small Independent Researcher, Toronto, Canada\\[3pt]
+\small \faGlobe~\href{https://www.sunnypatel.net}{sunnypatel.net}\quad\textbar\quad
+\faGithub~\href{https://github.com/sunnypatell/semantic-cache-reliability}{sunnypatell/semantic-cache-reliability}}
 \date{}
 
 \begin{document}
 \maketitle
+\thispagestyle{firstpage}
 
 \begin{abstract}
+\setlength{\leftskip}{0.045\textwidth}\setlength{\rightskip}{0.045\textwidth}
 \noindent
-A semantic cache reuses a stored answer whenever a new prompt's embedding is close
-enough to an earlier one, trading a model call for a lookup. The threshold that governs
-this trade also governs a quiet failure: a \emph{false hit}, where the cache returns a
-confident answer to a prompt the stored answer does not fit. We argue that the property
-a cache needs, whether one prompt's answer is valid for another, is not the embedding
-similarity it can measure, and we study the gap between them. Grounding
-cache-equivalence in human-labeled prompt pairs rather than in embedding geometry, we
-map the false-hit rate of six sentence-embedding models across three domains and the
-full range of thresholds, with bootstrap confidence intervals, and report the operating
-points deployments care about. We then inject false hits into retrieval and generation
-to measure what they cost once served, and we calibrate the threshold to that cost.
-On adversarial near-duplicate prompts every embedding, including the largest, separates
-equivalent from non-equivalent pairs barely above chance, and a lexical baseline beats them
-all; holding the false-hit rate under one percent caps coverage near nine percent on the
-easiest domain and under one percent on the rest. A fixed threshold proves catastrophic
-under a realistic false-hit penalty, costing several times the price of not caching; a
-cost-aware threshold tied to the measured penalty recovers near-baseline cost, but a value
-calibrated on an easy domain is ruinous on a hard one. The results caution against trusting a
-single similarity threshold, and they give practitioners a principled way to set one.
+A semantic cache reuses a stored answer when a new prompt's embedding is close enough to an
+earlier one, trading a model call for a lookup. The property such a cache actually needs,
+whether one prompt's stored answer is valid for another, is not the cosine similarity it can
+measure, and the cache fails exactly where the two diverge. Grounding this
+\emph{cache-equivalence} in human-labeled prompt pairs, we map the false-hit rate of six
+sentence embeddings across three domains with bootstrap confidence intervals. The sharpest
+finding is an inversion: on adversarial near-duplicates a classical lexical baseline separates
+equivalent from non-equivalent prompts better than every neural encoder, and better than a
+joint cross-encoder verifier, because the surface-form insensitivity that makes an embedding
+useful is what blinds it to a word-scrambled paraphrase; a larger encoder barely helps. Holding
+the false-hit rate under one percent caps coverage near nine percent on the easiest domain and
+under one percent elsewhere. Under a realistic penalty a fixed threshold costs several times
+more than not caching, while a threshold calibrated to the measured cost recovers near-baseline
+cost but transfers across domains only in the conservative direction. We release the protocol so
+that any team can measure this gap on its own encoder and price it into the threshold.
 \end{abstract}
+
+\begin{center}\begin{minipage}{0.91\textwidth}\small
+\textbf{Keywords:} semantic caching; large language models; embedding models; false-hit rate;
+retrieval-augmented generation; threshold calibration; reliability.
+
+\smallskip\noindent
+\textbf{Plain-language summary:} An LLM cache reuses an old answer when a new question looks
+similar. We show it often serves confident wrong answers when questions look alike but mean
+different things, measure the resulting damage, and show how to set the similarity cutoff that
+decides when reuse is safe.
+\end{minipage}\end{center}
+\medskip
 
 \input{sections/introduction}
 

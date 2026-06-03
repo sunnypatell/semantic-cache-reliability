@@ -42,9 +42,9 @@ data/raw/**
 .cache/
 hf_cache/
 
-# ---- build diagnostics + compiled main pdf (regenerable) ----
+# ---- build diagnostics ----
 paper/_diag/
-paper/main.pdf
+# paper/main.pdf is intentionally tracked: the final compiled PDF is committed for convenience.
 paper/latexmk.run.txt
 paper/*.o.txt
 paper/*.e.txt

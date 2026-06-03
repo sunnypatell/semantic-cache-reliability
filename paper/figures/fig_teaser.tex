@@ -1,0 +1,49 @@
+% Conceptual teaser (Figure 1). Drawn in TikZ so the type matches the body.
+% Panel (a): cache-equivalence is not cosine similarity. Panel (b): where the false hit is born.
+\begin{tikzpicture}[font=\footnotesize,pt/.style={circle,inner sep=0pt,minimum size=4.6pt}]
+% ===================== Panel (a): embedding space =====================
+\begin{scope}
+  \def\R{1.5}
+  \coordinate (c) at (0,0.25);
+  \begin{scope}
+    \clip (c) circle (\R);
+    \fill[fhred!10] (-\R-0.1,-\R-0.1) rectangle (\R+0.1,\R+0.1);
+  \end{scope}
+  \draw[dashed,thick,neutral] (c) circle (\R);
+  \node[neutral,font=\scriptsize] at (0,\R+0.52) {cosine threshold $\tau$};
+  \node[neutral,font=\scriptsize,text width=4.9cm,align=center] at (0,-\R-0.6)
+       {anything inside the circle is served the cached answer};
+  \node[pt,fill=black] (cd) at (c) {};
+  \node[anchor=south,align=center,font=\scriptsize,fill=white,fill opacity=0.8,
+        text opacity=1,inner sep=1.3pt,rounded corners=1pt] at ([yshift=4pt]cd)
+       {\textbf{cached:} ``strengths of X?''};
+  \node[pt,fill=eqgreen] (gd) at (-0.66,-0.5) {};
+  \node[eqgreen,anchor=east,align=right,font=\scriptsize] at ([xshift=-4pt]gd)
+       {``merits of X?''\\\emph{same answer} (true hit)};
+  \node[pt,fill=fhred] (rd) at (0.66,-0.5) {};
+  \node[fhred,anchor=west,align=left,font=\scriptsize] at ([xshift=4pt]rd)
+       {``weaknesses of X?''\\\emph{opposite answer} \textbf{(false hit)}};
+  \node[pt,fill=black!45,minimum size=4pt] (md) at (\R+0.28,\R-0.08) {};
+  \node[black!55,anchor=west,font=\scriptsize] at ([xshift=3pt]md) {unrelated (miss)};
+  \node[font=\scriptsize\itshape] at (0,-\R-1.28) {(a) cosine similarity cannot see meaning};
+\end{scope}
+% ===================== Panel (b): pipeline =====================
+\begin{scope}[xshift=6.1cm,yshift=-0.15cm,
+   box/.style={draw,rounded corners=2pt,inner sep=3pt,minimum height=7mm,font=\scriptsize,align=center},
+   >={Stealth[length=4pt]}]
+  \node[box] (q) at (0,1.45) {query $q$};
+  \node[box,right=4mm of q] (enc) {encode};
+  \node[box,right=4mm of enc] (nn) {nearest\\entry $c$};
+  \node[diamond,draw,aspect=1.7,inner sep=1pt,font=\scriptsize,align=center,below=7mm of enc] (gate) {$s\!\ge\!\tau$?};
+  \node[box,fill=eqgreen!12,below left=8mm and -3mm of gate] (serve) {serve cached\\response};
+  \node[box,below right=8mm and -3mm of gate] (miss) {call the\\model};
+  \draw[->] (q)--(enc); \draw[->] (enc)--(nn);
+  \draw[->] (nn) |- (gate.east);
+  \draw[->] (gate) -| node[pos=0.25,above,font=\scriptsize] {hit} (serve.north);
+  \draw[->] (gate) -| node[pos=0.25,above,font=\scriptsize] {miss} (miss.north);
+  \node[fhred,font=\scriptsize,align=center,below=5mm of serve] (fh)
+       {\textbf{false hit:} a confident,\\unlogged wrong answer};
+  \draw[->,fhred] (serve.south)--(fh.north);
+  \node[font=\scriptsize\itshape,below=5mm of fh] {(b) where the false hit is born};
+\end{scope}
+\end{tikzpicture}

@@ -5,7 +5,9 @@
 Sentence-Transformers interface with mean pooling and $L_2$-normalized output. The two
 \mbox{E5} models are queried with the recommended \texttt{query:} prefix for symmetric
 similarity; the others take the raw text. Exact weight revisions are pinned in the released
-code so that the numbers reproduce against fixed checkpoints.
+code so that the numbers reproduce against fixed checkpoints. The cross-encoder verifier of
+\cref{sec:results} is \texttt{cross-encoder/stsb-roberta-base}, used off the shelf with no
+fitting on our pairs.
 
 \begin{table}[t]
   \centering
@@ -30,18 +32,29 @@ code so that the numbers reproduce against fixed checkpoints.
   \end{threeparttable}
 \end{table}
 
+\section{Complete results matrix}
+\label{app:fullresults}
+\Cref{tab:fullresults} is the full record behind the main-text separability table and the
+operating-point figures: for every method and domain it gives both threshold-free metrics with
+their bootstrap intervals, the precision attainable at three recall targets, and the coverage
+attainable under two false-hit ceilings. The pattern that survives every cut is the adversarial
+column, where neural and lexical methods alike sit near the base rate.
+
+% Generated from results/reliability_summary.csv and the per-cell JSON reports by make_tables.py
+\input{tables/fullresults_table}
+
 \section{Datasheet for the cache-equivalence set}
 \label{app:datasheet}
 
 \paragraph{Motivation.}
-The set exists to evaluate whether an embedding cache's similarity decision matches a human
-notion of when two prompts may share an answer. It was assembled by the author for this study.
+The set measures whether an embedding cache's similarity decision matches a human notion of
+when two prompts may share an answer; the author assembled it for this study.
 
 \paragraph{Composition.}
 Each instance is a pair of short English texts with a binary label: cache-equivalent or not.
 The pairs are sampled from three public, human-annotated corpora,
-\mbox{2500} pairs each: Quora Question Pairs (duplicate questions)~\cite{wang2019glue}, the
-Microsoft Research Paraphrase Corpus (news paraphrase)~\cite{dolan2005mrpc}, and \mbox{PAWS}
+\mbox{2500} pairs each: Quora Question Pairs (duplicates)~\cite{wang2019glue}, the
+Microsoft Research Paraphrase Corpus (news)~\cite{dolan2005mrpc}, and \mbox{PAWS}
 (adversarial word-scrambled paraphrase)~\cite{zhang2019paws}. Base rates of the equivalent
 class are $0.36$, $0.68$, and $0.44$ respectively. Exact-duplicate and empty pairs are
 removed so that trivial matches do not inflate the positive class.
@@ -61,12 +74,13 @@ records; the derived labels and sampling are the author's work.
 \section{Reproducibility}
 \label{app:repro}
 
-All experiments run on CPU with fixed seeds. The released repository pins dependency versions,
-provides the exact commands that regenerate every table and figure from the raw scores, and
-records per-encoder wall-clock time and the negligible monetary cost (embedding inference is
-local; no paid API is used for the reliability study). A single entry point reproduces the
-full pipeline: build the labeled set, score it with each encoder, compute the bootstrap
-intervals, and render the figures.
+All experiments run on CPU with fixed seeds. The released repository pins dependency versions
+and provides the exact commands that regenerate every table and figure from the raw scores. The
+whole pipeline, the reliability sweep over seven methods and three domains, the cross-encoder
+baseline, and the downstream fault-injection study, runs in well under an hour on a single
+modern CPU at zero monetary cost; every model runs locally and no paid \textsc{api} is used. A
+single entry point reproduces it end to end: build the labeled set, score it with each method,
+compute the bootstrap intervals, run the downstream study, and render the figures.
 
 \section{Pre-specified analysis plan}
 \label{app:prereg}
@@ -75,9 +89,47 @@ Before the main run we fixed an analysis plan, released with the code, that name
 questions, the primary metric (\prauc{} under class imbalance, with the false-hit/coverage
 frontier as the operating-point view), the encoders and domains, the sample size of
 \mbox{2500} pairs per domain, the bootstrap procedure and the multiple-comparison correction,
-and the rule that all cross-encoder comparison would use threshold-free metrics. This is a
+and the rule that all between-encoder comparison would use threshold-free metrics. This is a
 self-recorded plan in the released materials, not a third-party registration. The sample of
 \mbox{2500} pairs per domain gives several hundred labeled examples per class in every
 encoder--domain cell, which keeps the bootstrap interval on the primary metric narrow,
 typically within about $\pm 0.03$ \prauc{} (\cref{tab:separability}). Deviations from the plan,
 if any, are reported with their rationale alongside the code.
+
+\section{Claims and evidence}
+\label{app:claims}
+
+\Cref{tab:claims} maps each claim this paper makes to the specific table or figure that
+supports it, so that a reader can check any one of them directly against the released data.
+
+\begin{table}[t]
+  \centering
+  \begin{threeparttable}
+    \caption{Each headline claim and the evidence behind it.}
+    \label{tab:claims}
+    \small
+    \begin{tabular}{>{\raggedright\arraybackslash}p{0.62\linewidth} l}
+      \toprule
+      Claim & Evidence \\
+      \midrule
+      Cache-equivalence is distinct from cosine similarity & \cref{fig:teaser}, \cref{sec:setup} \\
+      On adversarial near-duplicates every encoder is near chance (\prauc${}\le 0.62$) & \cref{tab:separability}, \cref{fig:heatmap} \\
+      A lexical baseline beats every neural encoder there (paired, $p<0.003$) & \cref{tab:separability}, \cref{sec:results-auc} \\
+      A joint cross-encoder verifier also collapses there (\prauc${}=0.51$) & \cref{tab:separability} \\
+      Scale barely helps ($+0.08$ \prauc{} from small to large E5) & \cref{tab:separability} \\
+      At a $1\%$ false-hit ceiling, coverage is $\approx 9\%$ (news), $<1\%$ (else) & \cref{fig:coverage}, \cref{tab:fullresults} \\
+      A false hit costs nearly as much in context as in the answer & \cref{fig:downstream}, \cref{sec:downstream} \\
+      A fixed threshold costs several times more than not caching & \cref{tab:calibration} \\
+      Cost-aware matches the ceiling policy without a hand-set target & \cref{tab:calibration}, \cref{alg:calib} \\
+      A threshold transfers across domains only in the conservative direction & \cref{sec:calibration} \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+\section{Author contributions}
+\label{app:credit}
+
+As the sole author, Sunny Patel is responsible for all roles under the
+\textsc{credit} taxonomy: conceptualization, methodology, software, formal analysis,
+investigation, data curation, writing (original draft and revision), and visualization.

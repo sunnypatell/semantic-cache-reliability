@@ -148,7 +148,10 @@ Authorities: Gopen & Swan; Dror et al. (significance testing in NLP); Henderson 
 - Clean repo: `src/`, `data/` with provenance + checksums, `experiments/` with exact
   commands, `results/`, `tests/`, README, LICENSE, CITATION.cff, SPDX headers, CHANGELOG,
   semver tags. Pinned dependencies. Fixed seeds. Zenodo DOI. ORCID linked.
-- Licenses: code MIT/Apache-2.0; data CC BY 4.0; paper CC BY 4.0.
+- Licenses: the paper and figures retain full copyright (all rights reserved); the code is
+  source-available for reproduction only, NOT a permissive OSS license; the labeled data is
+  the author's derived work, released for reproduction only. We deliberately do NOT use CC BY:
+  the work must not be repostable as someone else's (author's explicit decision).
 - Every citation sourced from OpenAlex / Semantic Scholar / DBLP / Crossref; the DOI must
   resolve and the cited work must actually say what we claim. The 2025 ghost-citation wave
   desk-rejected real papers; we verify all references and spot-read the cited passage.
@@ -175,8 +178,9 @@ Endorsement is required for a first-time unaffiliated submitter (tightened Janua
 line up a personal endorser active in `cs.IR`/`cs.CL`/`cs.LG`, or route through a peer-
 reviewed venue (e.g. TMLR) first. Primary category `cs.IR` (cross-list `cs.LG`, `cs.AI`).
 TeX submission: include the matching `.bbl`, no `\today`, relative case-correct paths,
-PDF/PNG figures, TeX Live 2025, fonts embedded. License CC BY 4.0; a DataCite DOI is minted
-automatically; link ORCID. The Comments field lists pages, figures, the code/data URLs, and
+PDF/PNG figures, TeX Live 2025, fonts embedded. License: arXiv's non-exclusive license to
+distribute (copyright retained; NOT CC BY, so the manuscript cannot be reposted as another's
+work); a DataCite DOI is minted automatically; link ORCID. The Comments field lists pages, figures, the code/data URLs, and
 the OSF preregistration.
 
 ---

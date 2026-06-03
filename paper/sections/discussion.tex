@@ -16,7 +16,7 @@ the reliability of the similarity proxy against that human notion of sameness, w
 proxy a deployed cache actually relies on.
 
 \paragraph{Internal validity.}
-Cosine scores are not comparable across encoders, so every cross-encoder statement uses
+Cosine scores are not comparable across encoders, so every between-encoder statement uses
 threshold-free metrics (\prauc{}, \rocauc{}), and every threshold is calibrated per encoder
 (\cref{sec:calibration}). Within an encoder, the false-hit rate and coverage are exact
 functions of the score distributions, so there is no estimator variance beyond sampling,
@@ -74,7 +74,10 @@ the cost of being wrong, and they should monitor the served stream rather than t
 Embedding caches also have a documented adversarial surface: an attacker who can shape
 prompts can manufacture collisions that force false hits~\cite{zhang2026keycollision}. Our
 study quantifies the benign version of the same failure, and the defense is aligned in both
-cases, namely a verification step or a conservative, cost-aware threshold rather than blind
-trust in similarity. On the other side of the ledger, caching reduces the compute and energy
+cases: a conservative, cost-aware threshold, and, where the latency budget allows, a
+verification step rather than blind trust in similarity. Our cross-encoder measurement tempers
+the second lever: a joint verifier sharpens the easy and middling cases but does not recover
+adversarial near-duplicates (\cref{sec:results}), so on the hardest prompts the dependable
+choice is to decline to cache. On the other side of the ledger, caching reduces the compute and energy
 of repeated inference, and a more reliable cache lets a system claim that saving without
 silently degrading the answers it serves.

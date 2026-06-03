@@ -112,6 +112,8 @@ def main() -> None:
             print(f"[downstream] {i + 1}/{len(rows)} questions")
 
     d = pd.DataFrame(recs)
+    # Persist per-question F1 so the figure can bootstrap confidence bands over questions.
+    d.to_csv(ROOT / "results" / "downstream_perquestion.csv", index=False, encoding="utf-8")
     base = d.f1_correct.mean()
     out = []
     conditions = {

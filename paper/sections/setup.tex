@@ -19,7 +19,26 @@ false-hit rate among served queries,
 \end{equation}
 reported together with \emph{coverage}, the fraction of queries the cache serves at
 $\thr$. Coverage is the benefit and $\fhr$ is the silent cost, and the threshold trades
-one for the other.
+one for the other. \Cref{tab:notation} collects the notation used throughout.
+
+\begin{table}[t]
+  \centering
+  \caption{Notation used throughout the paper.}
+  \label{tab:notation}
+  \small
+  \begin{tabular}{@{}r@{\ \ }l@{\hspace{2.2em}}r@{\ \ }l@{}}
+    \toprule
+    Symbol & Meaning & Symbol & Meaning \\
+    \midrule
+    $\query$ & incoming query (prompt)            & $\fhr(\thr)$ & false-hit rate, $1-\text{precision}$ \\
+    $\cached$ & nearest stored entry              & $\cov(\thr)$ & coverage, fraction served \\
+    $\emb{\cdot}$ & unit embedding of a prompt     & $\cfh$ & cost of a false hit (model calls) \\
+    $\simfun$ & cosine $\cossim(\emb{\query},\emb{\cached})$ & $\cost(\thr)$ & expected cost per query \\
+    $\thr$ & threshold; serve iff $\simfun\ge\thr$ & $N$ & number of queries \\
+    $\mathrm{TP},\mathrm{FP}$ & true / false hits at $\thr$ & $\prauc,\rocauc$ & threshold-free separability \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \subsection{Cache-equivalence is not similarity}
 The label in \cref{eq:fhr} is the crux. We define two prompts as \emph{cache-equivalent}
@@ -71,7 +90,9 @@ symmetric similarity, and exact identifiers and revisions are recorded in the mo
 cards (\cref{app:modelcards}). A lexical \mbox{TF-IDF} cosine serves as a non-neural
 control, fit unsupervised on word unigrams and bigrams of the pair text with no use of the
 labels, which isolates how much of the cache's behavior comes from learned semantics rather
-than word overlap.
+than word overlap. We additionally evaluate a cross-encoder that scores each pair jointly
+rather than embedding the two prompts independently; it cannot serve as an indexable cache,
+but it bounds what a verification layer can achieve (\cref{sec:results}).
 
 \subsection{Metrics}
 Two prompts in a labeled pair give one similarity score and one equivalence label, so a

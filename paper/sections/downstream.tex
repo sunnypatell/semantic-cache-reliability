@@ -41,6 +41,9 @@ quietly absorb a wrong cached premise is not supported here.
   \includegraphics[width=0.78\linewidth]{figures/fig_downstream}
   \caption{End-to-end reader $F_1$ as the injected false-hit rate rises, for a false hit on
     the final answer and on the retrieved passage (wrong or truncated). A wrong answer and a
-    wrong passage are almost equally damaging; only a partial corruption is gentler.}
+    wrong passage are almost equally damaging; only a partial corruption is gentler. Bands are
+    $95\%$ bootstrap intervals over the $400$ questions; because all three conditions use the
+    same questions, the separation between the truncated curve and the other two is a paired
+    difference, tighter than the absolute bands suggest.}
   \label{fig:downstream}
 \end{figure}

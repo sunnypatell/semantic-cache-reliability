@@ -2,18 +2,24 @@
 \begin{table}[t]
   \centering
   \begin{threeparttable}
-    \caption{Threshold policies on held-out test data, averaged over encoders and domains at
-      a false-hit penalty of $c_{\mathrm{fh}}=20$. Expected cost is in model calls per query
-      against the always-recompute baseline of $1$; lower is better.}
+    \caption{Threshold policies on held-out test data, averaged over encoders and domains at a
+      false-hit penalty of $\cfh=20$. Expected cost is in model calls per query against the
+      always-recompute baseline of $1$; lower is better (bold). A fixed default is several
+      times more expensive than not caching at all; the principled policies recover the
+      baseline, and the cost-aware form reaches it without a hand-set error target.}
     \label{tab:calibration}
-    \begin{tabular}{l r r r}
+    \begin{tabular}{l r r d{3}}
       \toprule
-      Policy & FHR (\%) & Coverage (\%) & Expected cost \\
+      Policy & \multicolumn{1}{c}{\fhr{} (\%)} & \multicolumn{1}{c}{Coverage (\%)} & \multicolumn{1}{c}{Expected cost $\downarrow$} \\
       \midrule
       Fixed ($\thr=0.80$) & 39.0 & 71.1 & 6.339 \\
-      Ceiling (FHR $\leq 5\%$) & 7.1 & 2.6 & 0.991 \\
-      Cost-aware (ours) & 6.1 & 1.9 & 0.991 \\
+      Ceiling (\fhr{} $\le 5\%$) & 7.1 & 2.6 & 0.991 \\
+      Cost-aware (\cref{alg:calib}) & 6.1 & 1.9 & \multicolumn{1}{c}{\bfseries 0.991} \\
       \bottomrule
     \end{tabular}
+    \begin{tablenotes}[flush]\footnotesize
+      \item At the milder $\cfh=5$ the fixed default still loses ($1.8\times$ baseline) while
+            both principled policies stay at or below it; see \cref{sec:calibration}.
+    \end{tablenotes}
   \end{threeparttable}
 \end{table}

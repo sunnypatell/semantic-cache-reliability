@@ -16,25 +16,44 @@ lowest threshold whose calibration false-hit rate stays under a target, the stra
 correctness-bounding caches such as verified caching~\cite{schroeder2025vcache}. Our
 \emph{cost-aware} policy chooses the threshold that minimizes expected cost,
 \begin{equation}
-  C(\thr) \;=\; \frac{c_{\mathrm{fh}}\,\mathrm{FP}(\thr) + \big(\mathrm{TN}(\thr)+\mathrm{FN}(\thr)\big)}{N},
+  C(\thr) \;=\; \frac{\cfh\,\mathrm{FP}(\thr) + \big(\mathrm{TN}(\thr)+\mathrm{FN}(\thr)\big)}{N},
   \label{eq:cost}
 \end{equation}
-where a correct hit saves a call, a miss costs one, and a false hit costs $c_{\mathrm{fh}}$
+where a correct hit saves a call, a miss costs one, and a false hit costs $\cfh$
 calls. The penalty is a deployment choice that folds the eventual recompute together with the
 reputational and task cost of a wrong answer (\cref{sec:downstream} shows it is large). It is
-the only free input, so the policy needs no per-prompt online feedback. We report a plausible
-bracket, $c_{\mathrm{fh}} \in \{5, 20\}$; the conclusions below are not an artifact of one
-penalty, because a larger penalty only pushes the chosen threshold higher, as it should.
+the only free input, so the policy needs no per-prompt online feedback (\cref{alg:calib}). We
+report a plausible bracket, $\cfh \in \{5, 20\}$; the conclusions below are not an artifact of
+one penalty, because a larger penalty only pushes the chosen threshold higher, as it should.
+
+\begin{algorithm}[t]
+\caption{Cost-aware threshold calibration.}
+\label{alg:calib}
+\begin{algorithmic}[1]
+\REQUIRE calibration pairs $\{(\simfun_i, y_i)\}_{i=1}^{N}$, with $y_i=1$ iff the pair is cache-equivalent; false-hit penalty $\cfh$
+\ENSURE threshold $\thr^\star$ that minimizes expected cost $\cost(\thr)$
+\STATE $\cost^\star \gets \infty$;\quad $\thr^\star \gets 1$
+\FORALL{candidate $\thr$ in the sorted unique scores $\{\simfun_i\}$}
+  \STATE $\mathrm{FP} \gets \lvert\{i : \simfun_i \ge \thr,\ y_i = 0\}\rvert$ \COMMENT{false hits served}
+  \STATE $M \gets \lvert\{i : \simfun_i < \thr\}\rvert$ \COMMENT{misses, recomputed}
+  \STATE $\cost(\thr) \gets (\cfh \cdot \mathrm{FP} + M)/N$ \COMMENT{a true hit saves the call}
+  \IF{$\cost(\thr) < \cost^\star$}
+    \STATE $\cost^\star \gets \cost(\thr)$;\quad $\thr^\star \gets \thr$
+  \ENDIF
+\ENDFOR
+\STATE \textbf{return} $\thr^\star$
+\end{algorithmic}
+\end{algorithm}
 
 \paragraph{Results.}
 The comparison in \cref{tab:calibration} is stark. At a false-hit penalty of
-$c_{\mathrm{fh}}=20$, the fixed $\thr=0.80$ default costs $6.3$ model calls per query against
+$\cfh=20$, the fixed $\thr=0.80$ default costs $6.3$ model calls per query against
 the always-recompute baseline of $1.0$, because at that threshold the cache fires on most
 queries while leaking a $39\%$ false-hit rate. A cache run on a fixed default is not a small
 loss; it is several times more expensive than not caching at all. Both principled policies
 avoid the disaster by retreating to a near-saturating threshold, and both land at almost
 exactly the baseline cost ($0.99$). The picture is not an artifact of the high penalty: even at
-the milder $c_{\mathrm{fh}}=5$ the fixed default still loses, at $1.8\times$ the no-cache
+the milder $\cfh=5$ the fixed default still loses, at $1.8\times$ the no-cache
 baseline, while the principled policies stay at or below it. The cache earns a genuine saving only where the domain
 allows it: on news the cost-aware policy holds the false-hit rate near zero while still
 serving enough to cut expected cost by about $7\%$ for E5-large; on questions it roughly

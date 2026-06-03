@@ -1,6 +1,27 @@
 \section{Introduction}
 \label{sec:intro}
 
+\begin{figure}[t]
+  \centering
+  \input{figures/fig_teaser}
+  \caption{\textbf{Cache-equivalence is not cosine similarity.} \textbf{(a)}~A semantic cache
+    serves the stored answer to any prompt whose embedding lies within a cosine threshold
+    $\thr$ of a cached prompt (shaded). The genuine paraphrase ``merits of X?'' and the
+    near-duplicate ``weaknesses of X?'' sit equally close to the cached ``strengths of X?'',
+    yet only the first may reuse the stored answer; no threshold admits the true hit while
+    rejecting the false one. \textbf{(b)}~Because the cache fires on similarity alone, the
+    false hit leaves as a confident, unlogged wrong answer. This paper measures how often this
+    happens across encoders and domains, what it costs downstream, and how to price it
+    into~$\thr$.}
+  \Description{Two panels. Panel (a) shows an embedding space with a dashed circle marking a
+    cosine similarity threshold around a cached prompt; a genuine paraphrase and a
+    word-scrambled near-duplicate both fall inside the circle, but only one shares the cached
+    answer, so a threshold cannot separate them. Panel (b) shows a pipeline in which a query is
+    encoded, matched to the nearest cached entry, and served whenever similarity clears the
+    threshold, with the false hit leaving as a confident wrong answer.}
+  \label{fig:teaser}
+\end{figure}
+
 A semantic cache answers a new prompt with a stored response whenever the new prompt
 looks close enough to one the system has already served. Closeness is judged in an
 embedding space: the cache encodes the incoming query, finds its nearest stored
@@ -18,7 +39,8 @@ itself is quiet. When the cache returns a stored answer to a prompt it does not 
 fit, nothing errors and nothing logs; the user simply receives a confident, wrong
 reply. We call this a \emph{false hit}, and it is the failure mode this paper measures.
 
-The difficulty is that embedding similarity and answer reuse are not the same property.
+The difficulty is that embedding similarity and answer reuse are not the same property
+(\cref{fig:teaser}): a semantic cache fails exactly where the two diverge.
 Two prompts can be near-identical in wording yet require opposite answers, as ``what are
 the strengths of this design'' and ``what are the weaknesses of this design'' do; two
 others can share almost no words yet take the same answer. Similarity is what the cache

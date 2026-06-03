@@ -35,7 +35,7 @@ ENCODER_LABEL = {
     "all-MiniLM-L6-v2": "MiniLM-L6", "all-mpnet-base-v2": "MPNet-base",
     "e5-small-v2": "E5-small", "e5-large-v2": "E5-large",
     "bge-base-en-v1.5": "BGE-base", "bge-large-en-v1.5": "BGE-large",
-    "tfidf-lexical": "TF-IDF (lexical)",
+    "tfidf-lexical": "TF-IDF (lexical)", "cross-encoder-stsb": "Cross-encoder",
 }
 DOMAIN_ORDER = ["qqp", "mrpc", "paws"]
 DOMAIN_LABEL = {"qqp": "Questions (QQP)", "mrpc": "News (MRPC)", "paws": "Adversarial (PAWS)"}
@@ -156,10 +156,12 @@ def fig_pr_curves(reports) -> None:
 
 
 def fig_score_overlap(reports) -> None:
-    """The grey zone: similarity-score distributions for equivalent vs non-equivalent
-    pairs, for one representative encoder across the three domains."""
+    """The grey zone (mechanistic money shot): similarity-score distributions for equivalent
+    vs non-equivalent pairs, for the strongest encoder, with the operating threshold that
+    keeps 90% recall, the false-hit zone shaded, and the median gap annotated. On the
+    adversarial domain the two classes collapse into the same narrow high band."""
     enc = "bge-large-en-v1.5" if ("mrpc", "bge-large-en-v1.5") in reports else _encoders_present(reports)[-1]
-    fig, axes = plt.subplots(1, len(DOMAIN_ORDER), figsize=(6.9, 2.3), sharey=True)
+    fig, axes = plt.subplots(1, len(DOMAIN_ORDER), figsize=(6.9, 2.5))
     for ax, dom in zip(axes, DOMAIN_ORDER):
         rep = reports.get((dom, enc))
         if rep is None:
@@ -171,40 +173,68 @@ def fig_score_overlap(reports) -> None:
         bins = np.linspace(lo, hi, 40)
         ax.hist(neg, bins=bins, density=True, color="#D55E00", alpha=0.55, label="not equivalent")
         ax.hist(pos, bins=bins, density=True, color="#0072B2", alpha=0.55, label="equivalent")
+        # Operating threshold that retains 90% of equivalent pairs (recall 0.9).
+        tau = float(np.percentile(pos, 10))
+        ax.axvline(tau, color="0.2", lw=0.9, ls=(0, (3, 2)))
+        ax.axvspan(tau, hi + (hi - lo) * 0.03, color="#D55E00", alpha=0.10, lw=0)
+        ax.annotate(r"$\tau$ at 90% recall", xy=(tau, 0.98), xycoords=("data", "axes fraction"),
+                    fontsize=5.5, color="0.2", ha="center", va="top",
+                    xytext=(0, -1), textcoords="offset points")
+        gap = float(np.median(pos) - np.median(neg))
+        ax.text(0.04, 0.96, f"median gap = {gap:.2g}", transform=ax.transAxes,
+                fontsize=6.5, va="top", ha="left")
         ax.set_title(DOMAIN_LABEL[dom])
         ax.set_xlabel("cosine similarity")
+        ax.set_xlim(lo, hi + (hi - lo) * 0.03)
     axes[0].set_ylabel("density")
-    axes[0].legend(loc="upper left", fontsize=6, title=ENCODER_LABEL[enc], title_fontsize=6)
-    fig.tight_layout()
+    # Shared legend below the panels so it never collides with the dense distributions.
+    from matplotlib.patches import Patch
+    handles = [Patch(facecolor="#0072B2", alpha=0.55, label="equivalent"),
+               Patch(facecolor="#D55E00", alpha=0.55, label="not equivalent"),
+               Patch(facecolor="#D55E00", alpha=0.10, label="false-hit zone (served, wrong)")]
+    fig.legend(handles=handles, loc="lower center", ncol=3, fontsize=6.5, frameon=False,
+               title=f"strongest encoder: {ENCODER_LABEL[enc]}", title_fontsize=6.5)
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
     _save(fig, "fig_score_overlap")
 
 
 def fig_downstream(_reports=None) -> None:
-    """End-to-end task F1 as a function of the injected false-hit rate, by fault position."""
+    """End-to-end task F1 vs injected false-hit rate, by fault position, with 95% bootstrap
+    bands over the 400 questions. The mixture is an exact identity in expectation; the band is
+    the sampling uncertainty in the two measured endpoints."""
     import pandas as pd
-    path = ROOT / "results" / "downstream_summary.csv"
-    if not path.exists():
-        print("[fig] downstream_summary.csv missing; skipping fig_downstream")
+    perq = ROOT / "results" / "downstream_perquestion.csv"
+    if not perq.exists():
+        print("[fig] downstream_perquestion.csv missing; skipping fig_downstream")
         return
-    df = pd.read_csv(path)
-    label = {
-        "answer cache (wrong answer)": "answer cache",
-        "context cache (wrong passage)": "context cache (wrong passage)",
-        "context cache (truncated passage)": "context cache (truncated)",
-    }
-    color = {
-        "answer cache (wrong answer)": "#D55E00",
-        "context cache (wrong passage)": "#0072B2",
-        "context cache (truncated passage)": "#009E73",
-    }
-    fig, ax = plt.subplots(figsize=(3.4, 2.5))
-    for cond, g in df.groupby("condition"):
-        g = g.sort_values("p")
-        ax.plot(g["p"] * 100, g["f1"], marker="o", markersize=3, linewidth=1.1,
-                color=color.get(cond, "#000000"), label=label.get(cond, cond))
+    d = pd.read_csv(perq)
+    correct = d["f1_correct"].to_numpy()
+    faults = [  # (column, label, color)
+        ("f1_wrong_ans", "answer cache (wrong answer)", "#D55E00"),
+        ("f1_wrong_ctx", "context cache (wrong passage)", "#0072B2"),
+        ("f1_trunc", "context cache (truncated)", "#009E73"),
+    ]
+    n = len(d)
+    ps = np.linspace(0.0, 0.10, 21)
+    marks = np.array([0.0, 0.01, 0.02, 0.05, 0.10])
+    rng = np.random.default_rng(0)
+    idx = rng.integers(0, n, size=(2000, n))           # shared resamples across conditions
+    bc = correct[idx].mean(axis=1)                      # (B,)
+    fig, ax = plt.subplots(figsize=(3.6, 2.6))
+    for col, label, color in faults:
+        fault = d[col].to_numpy()
+        line = (1 - ps) * correct.mean() + ps * fault.mean()
+        bf = fault[idx].mean(axis=1)                     # (B,)
+        curves = (1 - ps[None, :]) * bc[:, None] + ps[None, :] * bf[:, None]
+        lo, hi = np.percentile(curves, [2.5, 97.5], axis=0)
+        ax.fill_between(ps * 100, lo, hi, color=color, alpha=0.16, linewidth=0)
+        ax.plot(ps * 100, line, linewidth=1.2, color=color, label=label)
+        mline = (1 - marks) * correct.mean() + marks * fault.mean()
+        ax.plot(marks * 100, mline, "o", markersize=3, color=color)
     ax.set_xlabel("injected false-hit rate (%)")
     ax.set_ylabel(r"end-to-end token $F_1$")
-    ax.legend(fontsize=6.5, loc="lower left")
+    ax.set_xlim(0, 10)
+    ax.legend(fontsize=6.2, loc="lower left")
     fig.tight_layout()
     _save(fig, "fig_downstream")
 
@@ -236,16 +266,21 @@ def fig_coverage_bars(reports) -> None:
 
 
 def fig_heatmap(reports) -> None:
-    """Encoder x domain heatmap of PR-AUC (threshold-free separability)."""
+    """Encoder x domain heatmap of PR-AUC (threshold-free separability). The cross-encoder
+    verifier is shown as a final row to make its adversarial collapse visible."""
     encs = _encoders_present(reports)
+    if ("paws", "cross-encoder-stsb") in reports:
+        encs = encs + ["cross-encoder-stsb"]
     M = np.full((len(encs), len(DOMAIN_ORDER)), np.nan)
     for i, enc in enumerate(encs):
         for j, dom in enumerate(DOMAIN_ORDER):
             rep = reports.get((dom, enc))
             if rep:
                 M[i, j] = rep["pr_auc"]["estimate"]
-    fig, ax = plt.subplots(figsize=(3.4, 3.0))
+    fig, ax = plt.subplots(figsize=(3.4, 3.2))
     im = ax.imshow(M, cmap="viridis", vmin=0.5, vmax=1.0, aspect="auto")
+    if "cross-encoder-stsb" in encs:  # set the verifier row apart from the cache encoders
+        ax.axhline(len(encs) - 1.5, color="white", linewidth=1.6)
     ax.set_xticks(range(len(DOMAIN_ORDER)))
     ax.set_xticklabels([DOMAIN_LABEL[d].split(" ")[0] for d in DOMAIN_ORDER])
     ax.set_yticks(range(len(encs)))

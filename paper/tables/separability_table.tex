@@ -2,24 +2,36 @@
 \begin{table}[t]
   \centering
   \begin{threeparttable}
-    \caption{Threshold-free separability (\prauc{}) with $95\%$ bootstrap intervals, for
-      every encoder and domain. The adversarial column stays near its $0.44$ base rate for
-      every neural encoder, including the largest; remarkably, the lexical control outscores
-      them all there, because word-scrambling defeats semantic similarity while the bigram
-      structure it reads does not.}
+    \caption{Threshold-free separability for every method and domain (point estimates; bold
+      is the column best). Higher is better. The neural bi-encoders cluster near the
+      adversarial base rate of $0.44$; the lexical control and even a joint cross-encoder do
+      not rescue that column, and the lexical control is the single best method on it.}
     \label{tab:separability}
-    \begin{tabular}{l c c c}
+    \small
+    \begin{tabular}{l d{2} d{2} d{2} d{2} d{2} d{2}}
       \toprule
-      Encoder & Questions & News & Adversarial \\
+      & \multicolumn{3}{c}{\prauc{} $\uparrow$} & \multicolumn{3}{c}{\rocauc{} $\uparrow$} \\
+      \cmidrule(lr){2-4}\cmidrule(lr){5-7}
+      \multicolumn{1}{l}{Encoder} & \multicolumn{1}{c}{Ques.} & \multicolumn{1}{c}{News} & \multicolumn{1}{c}{Adv.} & \multicolumn{1}{c}{Ques.} & \multicolumn{1}{c}{News} & \multicolumn{1}{c}{Adv.} \\
       \midrule
-      MiniLM-L6 & 0.76\,(0.72,0.78) & 0.86\,(0.84,0.87) & 0.59\,(0.55,0.62) \\
-      MPNet-base & 0.78\,(0.75,0.81) & 0.87\,(0.85,0.89) & 0.60\,(0.57,0.63) \\
-      E5-small & 0.74\,(0.70,0.77) & 0.89\,(0.88,0.91) & 0.54\,(0.50,0.57) \\
-      E5-large & 0.76\,(0.73,0.79) & 0.90\,(0.88,0.91) & 0.62\,(0.58,0.65) \\
-      BGE-base & 0.76\,(0.72,0.78) & 0.88\,(0.87,0.90) & 0.58\,(0.55,0.61) \\
-      BGE-large & 0.78\,(0.75,0.80) & 0.89\,(0.88,0.91) & 0.62\,(0.58,0.65) \\
-      TF-IDF (lexical) & 0.49\,(0.46,0.53) & 0.84\,(0.82,0.85) & 0.66\,(0.62,0.69) \\
+      MiniLM-L6 & 0.76 & 0.86 & 0.59 & 0.87 & 0.76 & 0.64 \\
+      MPNet-base & \multicolumn{1}{c}{\bfseries 0.78} & 0.87 & 0.60 & \multicolumn{1}{c}{\bfseries 0.89} & 0.78 & 0.66 \\
+      E5-small & 0.74 & 0.89 & 0.54 & 0.86 & 0.81 & 0.59 \\
+      E5-large & 0.76 & 0.90 & 0.62 & 0.87 & 0.82 & 0.67 \\
+      BGE-base & 0.76 & 0.88 & 0.58 & 0.87 & 0.80 & 0.63 \\
+      BGE-large & \multicolumn{1}{c}{\bfseries 0.78} & 0.89 & 0.62 & 0.88 & 0.81 & 0.65 \\
+      \midrule
+      TF-IDF (lexical) & 0.49 & 0.84 & \multicolumn{1}{c}{\bfseries 0.66} & 0.70 & 0.71 & \multicolumn{1}{c}{\bfseries 0.72} \\
+      Cross-encoder\tnote{a} & 0.76 & \multicolumn{1}{c}{\bfseries 0.92} & 0.51 & 0.87 & \multicolumn{1}{c}{\bfseries 0.84} & 0.60 \\
       \bottomrule
     \end{tabular}
+    \begin{tablenotes}[flush]\footnotesize
+      \item Domains: Questions (\textsc{qqp}, base rate $0.36$), News (\textsc{mrpc}, $0.68$),
+            Adversarial (\textsc{paws}, $0.44$). $95\%$ \textsc{bca} bootstrap half-widths are
+            $\le 0.04$ throughout; full intervals and operating points are in
+            \cref{tab:fullresults}.
+      \item[a] A joint cross-encoder verifier, not a drop-in cache: it scores each pair on the
+            fly and cannot be \textsc{ann}-indexed. Shown for reference.
+    \end{tablenotes}
   \end{threeparttable}
 \end{table}
