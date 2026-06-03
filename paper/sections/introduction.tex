@@ -1,0 +1,81 @@
+\section{Introduction}
+\label{sec:intro}
+
+A semantic cache answers a new prompt with a stored response whenever the new prompt
+looks close enough to one the system has already served. Closeness is judged in an
+embedding space: the cache encodes the incoming query, finds its nearest stored
+neighbor, and returns the neighbor's answer when their cosine similarity clears a
+threshold $\thr$. The appeal is obvious. A served hit skips a model call, so a cache
+that fires often turns the dominant cost of an \mbox{LLM} service, inference, into a
+lookup~\cite{bang2023gptcache,gill2024meancache}. Production systems now ship semantic
+caches by default, and recent work has pushed their hit rates higher and added online
+guarantees on correctness~\cite{schroeder2025vcache,wang2025categoryaware}.
+
+The threshold hides a hard decision. Set it low and the cache fires often, paying back
+its keep, but it also begins to serve answers to prompts that only resemble an earlier
+one. Set it high and those mistakes vanish, along with most of the savings. The mistake
+itself is quiet. When the cache returns a stored answer to a prompt it does not actually
+fit, nothing errors and nothing logs; the user simply receives a confident, wrong
+reply. We call this a \emph{false hit}, and it is the failure mode this paper measures.
+
+The difficulty is that embedding similarity and answer reuse are not the same property.
+Two prompts can be near-identical in wording yet require opposite answers, as ``what are
+the strengths of this design'' and ``what are the weaknesses of this design'' do; two
+others can share almost no words yet take the same answer. Similarity is what the cache
+can see. \emph{Cache-equivalence}, the question of whether one prompt's stored answer is
+valid for another, is what it needs. Prior work has largely optimized the first as a
+proxy for the second: it tunes thresholds, learns them online from correctness
+feedback~\cite{schroeder2025vcache}, specializes them by query
+category~\cite{wang2025categoryaware}, or sharpens the embedding
+itself~\cite{gill2025advancing}. What the literature has not done is measure how often
+the proxy fails when it is not under attack, chart how that failure rate moves with the
+embedding model and the domain, follow it into the quality of the task the cache serves,
+or turn the measurement into an operating point that accounts for what a false hit
+actually costs. The one adversarial study of these caches shows the proxy can be broken
+on purpose~\cite{zhang2026keycollision}; we ask how often it breaks on its own.
+
+This paper answers that question with a measurement study and a calibration method built
+on it. We separate cache-equivalence from textual similarity and label it directly,
+drawing on human-annotated pair corpora whose judgments encode same-meaning rather than
+word overlap~\cite{zhang2019paws,wang2019glue,dolan2005mrpc}. On this footing we measure
+the false-hit rate of six widely used sentence
+embeddings~\cite{reimers2019sentencebert,wang2022e5,xiao2023cpack} across three domains
+and the full range of thresholds, report it with bootstrap confidence intervals, and
+read off the operating points a practitioner reasons about: how much of the traffic a
+cache can serve while holding its error below a ceiling, and how clean it can be while
+still reusing a target share of genuinely reusable answers. We then inject false hits
+into downstream retrieval and generation to measure what they cost once served, and we
+use that cost to calibrate the threshold. The resulting policy minimizes expected cost
+under the measured, asymmetric penalty of a false hit, and it transfers across models
+and domains without the per-prompt online feedback that earlier correctness-bounding
+methods require.
+
+Our findings are not reassuring for the default of trusting a single similarity
+threshold. \pending{headline: on adversarial paraphrases the strongest embedding
+separates equivalent from non-equivalent pairs barely above chance}. \pending{headline:
+to hold the false-hit rate under one percent, even the best model serves only a small
+fraction of queries}. \pending{headline: false hits degrade downstream task quality by
+X, and the damage depends on where in the pipeline the cache sits}. \pending{headline:
+cost-aware calibration shifts the cost-coverage frontier relative to fixed and
+correctness-bounding thresholds, and transfers across domains with a small gap}.
+
+\paragraph{Contributions.}
+\begin{itemize}
+  \item A \emph{cache-equivalence} construct that separates ``safe to reuse the stored
+        answer'' from ``looks similar,'' together with a labeling protocol that grounds
+        it in human judgments rather than embedding geometry (\cref{sec:setup}).
+  \item The first systematic map of benign false-hit economics for embedding caches:
+        false-hit rate and coverage across six encoders, three domains, and all
+        thresholds, with bootstrap confidence intervals and the operating points that
+        matter in deployment (\cref{sec:results}).
+  \item A measurement of the downstream cost of a false hit, obtained by controlled
+        fault injection into retrieval and generation, broken down by task and by the
+        cache's position in the pipeline (\cref{sec:downstream}).
+  \item A cost-aware threshold-calibration policy that ties the operating point to the
+        measured cost of a false hit and transfers across models and domains without
+        online feedback, with an honest comparison to fixed and correctness-bounding
+        baselines (\cref{sec:calibration}).
+\end{itemize}
+
+All code, the labeled data, and the exact commands that regenerate every number and
+figure are released with the paper.

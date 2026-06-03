@@ -1,23 +1,235 @@
-@misc{vcache2025,
-  title        = {{vCache}: Verified Semantic Prompt Caching},
-  author       = {Schroeder, Luis Gaspar and Desai, Aditya and Cuadron, Alejandro and Chu, Mark and Kemper, Alfons and Gonzalez, Joseph E. and Zaharia, Matei},
-  year         = {2025},
-  eprint       = {2502.03771},
-  archiveprefix = {arXiv},
-  primaryclass = {cs.LG}
+% Verified bibliography for "When Semantic Caches Lie".
+% Every entry confirmed against a primary source (arXiv / ACL Anthology / DOI).
+
+% ==================== SEMANTIC CACHING ====================
+
+@inproceedings{bang2023gptcache,
+  author    = {Bang, Fu},
+  title     = {{GPTCache}: An Open-Source Semantic Cache for {LLM} Applications Enabling Faster Answers and Cost Savings},
+  booktitle = {Proceedings of the 3rd Workshop for Natural Language Processing Open Source Software ({NLP-OSS})},
+  year      = {2023},
+  doi       = {10.18653/v1/2023.nlposs-1.24}
 }
 
-@inproceedings{sentencebert2019,
-  title     = {{Sentence-BERT}: Sentence Embeddings using Siamese {BERT}-Networks},
+@article{schroeder2025vcache,
+  author  = {Schroeder, Luis Gaspar and Desai, Aditya and Cuadron, Alejandro and Chu, Kyle and Liu, Shu and Zhao, Mark and Krusche, Stephan and Kemper, Alfons and Zaharia, Matei and Gonzalez, Joseph E.},
+  title   = {v{C}ache: Verified Semantic Prompt Caching},
+  journal = {arXiv preprint},
+  year    = {2025},
+  eprint  = {2502.03771},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG}
+}
+
+@article{gill2024meancache,
+  author  = {Gill, Waris and Elidrisi, Mohamed and Kalapatapu, Pallavi and Ahmed, Ammar and Anwar, Ali and Gulzar, Muhammad Ali},
+  title   = {{MeanCache}: User-Centric Semantic Caching for {LLM} Web Services},
+  journal = {arXiv preprint},
+  year    = {2024},
+  eprint  = {2403.02694},
+  archivePrefix = {arXiv}
+}
+
+@article{wang2025categoryaware,
+  author  = {Wang, Chen and Liu, Xunzhuo and Zhu, Yue and Youssef, Alaa and Nagpurkar, Priya and Chen, Huamin},
+  title   = {Category-Aware Semantic Caching for Heterogeneous {LLM} Workloads},
+  journal = {arXiv preprint},
+  year    = {2025},
+  eprint  = {2510.26835},
+  archivePrefix = {arXiv}
+}
+
+@article{zhang2026keycollision,
+  author  = {Zhang, Zhixiang and Liu, Zesen and Xie, Yuchong and Huang, Quanfeng and She, Dongdong},
+  title   = {From Similarity to Vulnerability: Key Collision Attack on {LLM} Semantic Caching},
+  journal = {arXiv preprint},
+  year    = {2026},
+  eprint  = {2601.23088},
+  archivePrefix = {arXiv}
+}
+
+@article{gill2025advancing,
+  author  = {Gill, Waris and Cechmanek, Justin and Hutcherson, Tyler and Rajamohan, Srijith and Agarwal, Jen and Gulzar, Muhammad Ali and Singh, Manvinder and Dion, Benoit},
+  title   = {Advancing Semantic Caching for {LLMs} with Domain-Specific Embeddings and Synthetic Data},
+  journal = {arXiv preprint},
+  year    = {2025},
+  eprint  = {2504.02268},
+  archivePrefix = {arXiv}
+}
+
+% ==================== EMBEDDINGS / MODELS ====================
+
+@inproceedings{reimers2019sentencebert,
   author    = {Reimers, Nils and Gurevych, Iryna},
-  booktitle = {Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  title     = {Sentence-{BERT}: Sentence Embeddings using Siamese {BERT}-Networks},
+  booktitle = {Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing ({EMNLP})},
   year      = {2019},
   doi       = {10.18653/v1/D19-1410}
 }
 
-@inproceedings{rag2020,
-  title     = {Retrieval-Augmented Generation for Knowledge-Intensive {NLP} Tasks},
+@article{wang2022e5,
+  author  = {Wang, Liang and Yang, Nan and Huang, Xiaolong and Jiao, Binxing and Yang, Linjun and Jiang, Daxin and Majumder, Rangan and Wei, Furu},
+  title   = {Text Embeddings by Weakly-Supervised Contrastive Pre-training},
+  journal = {arXiv preprint},
+  year    = {2022},
+  eprint  = {2212.03533},
+  archivePrefix = {arXiv}
+}
+
+@article{xiao2023cpack,
+  author  = {Xiao, Shitao and Liu, Zheng and Zhang, Peitian and Muennighoff, Niklas},
+  title   = {{C-Pack}: Packed Resources For General {Chinese} Embeddings},
+  journal = {arXiv preprint},
+  year    = {2023},
+  eprint  = {2309.07597},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{muennighoff2023mteb,
+  author    = {Muennighoff, Niklas and Tazi, Nouamane and Magne, Lo{\"i}c and Reimers, Nils},
+  title     = {{MTEB}: Massive Text Embedding Benchmark},
+  booktitle = {Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics ({EACL})},
+  year      = {2023}
+}
+
+@article{song2020mpnet,
+  author  = {Song, Kaitao and Tan, Xu and Qin, Tao and Lu, Jianfeng and Liu, Tie-Yan},
+  title   = {{MPNet}: Masked and Permuted Pre-training for Language Understanding},
+  journal = {arXiv preprint},
+  year    = {2020},
+  eprint  = {2004.09297},
+  archivePrefix = {arXiv}
+}
+
+% ==================== DATASETS ====================
+
+@inproceedings{wang2019glue,
+  author    = {Wang, Alex and Singh, Amanpreet and Michael, Julian and Hill, Felix and Levy, Omer and Bowman, Samuel R.},
+  title     = {{GLUE}: A Multi-Task Benchmark and Analysis Platform for Natural Language Understanding},
+  booktitle = {Proceedings of the 7th International Conference on Learning Representations ({ICLR})},
+  year      = {2019}
+}
+
+@inproceedings{zhang2019paws,
+  author    = {Zhang, Yuan and Baldridge, Jason and He, Luheng},
+  title     = {{PAWS}: Paraphrase Adversaries from Word Scrambling},
+  booktitle = {Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies ({NAACL-HLT})},
+  year      = {2019}
+}
+
+@inproceedings{dolan2005mrpc,
+  author    = {Dolan, Bill and Brockett, Chris},
+  title     = {Automatically Constructing a Corpus of Sentential Paraphrases},
+  booktitle = {Proceedings of the 3rd International Workshop on Paraphrasing ({IWP2005})},
+  year      = {2005},
+  pages     = {9--16}
+}
+
+@misc{qqp2017,
+  author       = {{Quora}},
+  title        = {First {Quora} Dataset Release: Question Pairs},
+  year         = {2017},
+  howpublished = {Quora Data Blog}
+}
+
+@inproceedings{cer2017sts,
+  author    = {Cer, Daniel and Diab, Mona and Agirre, Eneko and Lopez-Gazpio, I{\~n}igo and Specia, Lucia},
+  title     = {{SemEval}-2017 Task 1: Semantic Textual Similarity Multilingual and Crosslingual Focused Evaluation},
+  booktitle = {Proceedings of the 11th International Workshop on Semantic Evaluation ({SemEval}-2017)},
+  year      = {2017}
+}
+
+% ==================== RETRIEVAL / RAG ====================
+
+@inproceedings{lewis2020rag,
   author    = {Lewis, Patrick and Perez, Ethan and Piktus, Aleksandra and Petroni, Fabio and Karpukhin, Vladimir and Goyal, Naman and K{\"u}ttler, Heinrich and Lewis, Mike and Yih, Wen-tau and Rockt{\"a}schel, Tim and Riedel, Sebastian and Kiela, Douwe},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  title     = {Retrieval-Augmented Generation for Knowledge-Intensive {NLP} Tasks},
+  booktitle = {Advances in Neural Information Processing Systems 33 ({NeurIPS})},
   year      = {2020}
+}
+
+@inproceedings{karpukhin2020dpr,
+  author    = {Karpukhin, Vladimir and O{\u{g}}uz, Barlas and Min, Sewon and Lewis, Patrick and Wu, Ledell and Edunov, Sergey and Chen, Danqi and Yih, Wen-tau},
+  title     = {Dense Passage Retrieval for Open-Domain Question Answering},
+  booktitle = {Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing ({EMNLP})},
+  year      = {2020}
+}
+
+% ==================== STATISTICS / METHOD ====================
+
+@article{efron1987bootstrap,
+  author  = {Efron, Bradley},
+  title   = {Better Bootstrap Confidence Intervals},
+  journal = {Journal of the American Statistical Association},
+  year    = {1987},
+  volume  = {82},
+  number  = {397},
+  pages   = {171--185},
+  doi     = {10.1080/01621459.1987.10478410}
+}
+
+@book{efron1993bootstrap,
+  author    = {Efron, Bradley and Tibshirani, Robert J.},
+  title     = {An Introduction to the Bootstrap},
+  publisher = {Chapman \& Hall},
+  year      = {1993}
+}
+
+@article{benjamini1995fdr,
+  author  = {Benjamini, Yoav and Hochberg, Yosef},
+  title   = {Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing},
+  journal = {Journal of the Royal Statistical Society: Series B (Methodological)},
+  year    = {1995},
+  volume  = {57},
+  number  = {1},
+  pages   = {289--300},
+  doi     = {10.1111/j.2517-6161.1995.tb02031.x}
+}
+
+@inproceedings{dror2018hitchhiker,
+  author    = {Dror, Rotem and Baumer, Gili and Shlomov, Segev and Reichart, Roi},
+  title     = {The Hitchhiker's Guide to Testing Statistical Significance in Natural Language Processing},
+  booktitle = {Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  year      = {2018},
+  pages     = {1383--1392},
+  doi       = {10.18653/v1/P18-1128}
+}
+
+@book{krippendorff2004content,
+  author    = {Krippendorff, Klaus},
+  title     = {Content Analysis: An Introduction to Its Methodology},
+  edition   = {2},
+  publisher = {SAGE Publications},
+  year      = {2004}
+}
+
+% ==================== DOCUMENTATION STANDARDS ====================
+
+@article{gebru2021datasheets,
+  author  = {Gebru, Timnit and Morgenstern, Jamie and Vecchione, Briana and Vaughan, Jennifer Wortman and Wallach, Hanna and Daum{\'e} III, Hal and Crawford, Kate},
+  title   = {Datasheets for Datasets},
+  journal = {Communications of the ACM},
+  year    = {2021},
+  volume  = {64},
+  number  = {12},
+  pages   = {86--92},
+  doi     = {10.1145/3458723}
+}
+
+@inproceedings{mitchell2019modelcards,
+  author    = {Mitchell, Margaret and Wu, Simone and Zaldivar, Andrew and Barnes, Parker and Vasserman, Lucy and Hutchinson, Ben and Spitzer, Elena and Raji, Inioluwa Deborah and Gebru, Timnit},
+  title     = {Model Cards for Model Reporting},
+  booktitle = {Proceedings of the Conference on Fairness, Accountability, and Transparency ({FAT*})},
+  year      = {2019},
+  doi       = {10.1145/3287560.3287596}
+}
+
+% ==================== LLM SERVING ====================
+
+@inproceedings{kwon2023vllm,
+  author    = {Kwon, Woosuk and Li, Zhuohan and Zhuang, Siyuan and Sheng, Ying and Zheng, Lianmin and Yu, Cody Hao and Gonzalez, Joseph E. and Zhang, Hao and Stoica, Ion},
+  title     = {Efficient Memory Management for Large Language Model Serving with {PagedAttention}},
+  booktitle = {Proceedings of the 29th Symposium on Operating Systems Principles ({SOSP})},
+  year      = {2023},
+  doi       = {10.1145/3600006.3613165}
 }

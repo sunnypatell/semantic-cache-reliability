@@ -1,0 +1,98 @@
+\section{What a cache must decide}
+\label{sec:setup}
+
+\subsection{The decision and its failure mode}
+A semantic cache holds a set of prompt--response pairs. When a query $\query$ arrives,
+the cache encodes it to a vector $\emb{\query}$, retrieves the nearest stored entry
+$\cached$ with vector $\emb{\cached}$, and computes the cosine similarity
+$\simfun = \cossim(\emb{\query}, \emb{\cached})$. If $\simfun \ge \thr$ the cache serves
+$\cached$'s stored response; otherwise the query falls through to the model. The single
+free parameter is the threshold $\thr$.
+
+A served query is a \emph{hit}. A hit is \emph{true} when the stored response is a valid
+answer to $\query$ and \emph{false} when it is not. The quantity we track is the
+false-hit rate among served queries,
+\begin{equation}
+  \fhr(\thr) \;=\; \Pr\!\left[\,\text{not equivalent} \;\middle|\; \simfun \ge \thr\,\right]
+            \;=\; 1 - \operatorname{precision}(\thr),
+  \label{eq:fhr}
+\end{equation}
+reported together with \emph{coverage}, the fraction of queries the cache serves at
+$\thr$. Coverage is the benefit and $\fhr$ is the silent cost, and the threshold trades
+one for the other.
+
+\subsection{Cache-equivalence is not similarity}
+The label in \cref{eq:fhr} is the crux. We define two prompts as \emph{cache-equivalent}
+when the stored response to one is a factually and logically valid answer to the other,
+so that serving it requires no regeneration. This is a property of answers, not of
+surface form. It is distinct from cosine similarity, which is all the cache can observe,
+and the gap between the two is precisely where false hits live: a pair that scores high
+yet is not equivalent is a false hit waiting to happen.
+
+Because cache-equivalence is a human judgment, we ground it in human-labeled data rather
+than in the embedding geometry we are auditing. We use three public pair corpora whose
+annotations encode same-meaning or same-intent (\cref{tab:datasets}). Quora Question
+Pairs labels whether two questions are duplicates, and duplicate questions are, by
+construction, questions that should receive the same answer~\cite{wang2019glue}. The
+Microsoft Research Paraphrase Corpus labels sentential equivalence in a more formal,
+news register~\cite{dolan2005mrpc}. \mbox{PAWS} is the decisive case: its pairs are
+constructed to share almost all of their words while frequently differing in meaning, so
+it isolates the prompts that look identical to a cache yet must not share an
+answer~\cite{zhang2019paws}. Treating question-duplication and paraphrase as proxies for
+answer-equivalence is defensible but imperfect, and we return to the limits of the proxy
+in \cref{sec:threats}.
+
+\begin{table}[t]
+  \centering
+  \begin{threeparttable}
+    \caption{The three labeled domains. Base rate is the fraction of pairs labeled
+      cache-equivalent. \mbox{PAWS} pairs are built to maximize lexical overlap, which
+      makes it the hardest case for a similarity cache.}
+    \label{tab:datasets}
+    \begin{tabular}{l l r r}
+      \toprule
+      Domain & Source & Pairs & Base rate \\
+      \midrule
+      Questions (\textsc{qqp})   & Quora Question Pairs       & 2500 & 0.36 \\
+      News (\textsc{mrpc})       & MS Research Paraphrase     & 2500 & 0.68 \\
+      Adversarial (\textsc{paws}) & Word-scrambled paraphrase & 2500 & 0.44 \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+\subsection{Encoders}
+We measure six sentence embedding models that span the sizes and families a practitioner
+would actually reach for: \texttt{all-MiniLM-L6-v2} and \texttt{all-mpnet-base-v2} from
+the Sentence-Transformers family~\cite{reimers2019sentencebert,song2020mpnet}, the small
+and large \mbox{E5} models~\cite{wang2022e5}, and the base and large \mbox{BGE}
+models~\cite{xiao2023cpack}. Each model is used in its recommended configuration for
+symmetric similarity, and exact identifiers and revisions are recorded in the model
+cards (\cref{app:modelcards}). A lexical \mbox{TF-IDF} cosine serves as a non-neural
+control, which isolates how much of the cache's behavior comes from learned semantics
+rather than word overlap.
+
+\subsection{Metrics}
+Two prompts in a labeled pair give one similarity score and one equivalence label, so a
+domain--encoder combination yields a set of $(\,\text{label},\, \simfun\,)$ observations.
+From these we report threshold-free separability first, because it does not depend on a
+chosen operating point: the area under the precision--recall curve ($\prauc$), which is
+informative under the class imbalance typical of cache traffic, and the area under the
+\mbox{ROC} curve ($\rocauc$) as a secondary summary. We then report the two operating
+points a deployment cares about. \emph{Coverage at a false-hit ceiling} answers ``if the
+cache may serve a wrong answer no more than once in a hundred, how much traffic can it
+serve?'' \emph{Precision at a recall target} answers its dual, ``if the cache must reuse
+at least this share of genuinely reusable answers, how clean can it be?'' Cosine scores
+are not comparable across encoders, so all cross-encoder comparison uses the
+threshold-free metrics, and per-encoder thresholds are calibrated separately
+(\cref{sec:calibration}).
+
+\subsection{Statistics}
+Every reported quantity carries a $95\%$ bias-corrected and accelerated bootstrap
+confidence interval over pairs~\cite{efron1987bootstrap,efron1993bootstrap}, which suits
+the skewed sampling distribution of a rare-event rate better than a normal
+approximation. Differences between methods on a shared set use a paired bootstrap, and
+the many comparisons across encoders, domains, and thresholds are corrected for multiple
+testing with the Benjamini--Hochberg procedure~\cite{benjamini1995fdr}; we report effect
+sizes alongside every test~\cite{dror2018hitchhiker}. The analysis plan, the primary
+metric, and the sample sizes were preregistered before the main run.

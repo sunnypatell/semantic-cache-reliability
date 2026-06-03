@@ -63,6 +63,9 @@
             maxbibnames=99,giveninits=true,url=false,doi=true,eprint=true]{biblatex}
 \addbibresource{references.bib}
 
+%% --- Shared macros and notation ----------------------------------------------
+\input{sections/macros}
+
 %% --- Widow/orphan control ----------------------------------------------------
 \widowpenalty=10000
 \clubpenalty=10000
@@ -81,46 +84,27 @@ license. Correspondence: \texttt{sunnypatel124555@gmail.com}.}\\[2pt]
 
 \begin{abstract}
 \noindent
-[Abstract placeholder. Problem, gap, what we did, what we found, why it matters.
-150--250 words, no citations.] This document is the typesetting and pipeline
-smoke test for the diamond-standard build: it exercises XCharter text, matched
-Charter mathematics, \texttt{booktabs}/\texttt{siunitx} tables, \texttt{cleveref}
-cross-references, \texttt{hyperref} metadata, and the \texttt{biblatex}/\texttt{biber}
-bibliography. If it compiles cleanly with embedded fonts, the foundation holds.
+A semantic cache reuses a stored answer whenever a new prompt's embedding is close
+enough to an earlier one, trading a model call for a lookup. The threshold that governs
+this trade also governs a quiet failure: a \emph{false hit}, where the cache returns a
+confident answer to a prompt the stored answer does not fit. We argue that the property
+a cache needs, whether one prompt's answer is valid for another, is not the embedding
+similarity it can measure, and we study the gap between them. Grounding
+cache-equivalence in human-labeled prompt pairs rather than in embedding geometry, we
+map the false-hit rate of six sentence-embedding models across three domains and the
+full range of thresholds, with bootstrap confidence intervals, and report the operating
+points deployments care about. We then inject false hits into retrieval and generation
+to measure what they cost once served, and we calibrate the threshold to that cost.
+\pending{One- or two-sentence headline finding, filled from final results.} A cost-aware
+policy that ties the operating point to the measured penalty of a false hit improves the
+cost--coverage frontier over fixed and correctness-bounding thresholds, and it transfers
+across domains. The results caution against trusting a single similarity threshold, and
+they give practitioners a principled way to set one.
 \end{abstract}
 
-\section{Introduction}
-\label{sec:intro}
-Semantic caching reuses a stored answer when a new query is judged close enough
-to an earlier one. The judgment is an embedding similarity test: if
-\(\cos(\mathbf{e}_q, \mathbf{e}_c) \ge \tau\), the cache returns the stored
-response. \Cref{tab:smoke} previews the comparison structure. The risk we study
-is the \emph{false hit}: a query served a stored answer that does not actually
-answer it. Prior work on verified caching reduces this error online~\cite{vcache2025},
-building on sentence embeddings~\cite{sentencebert2019} and retrieval-augmented
-generation~\cite{rag2020}.
+\input{sections/introduction}
 
-\begin{table}[t]
-  \centering
-  \begin{threeparttable}
-    \caption{Smoke-test table: baseline comparison structure.}
-    \label{tab:smoke}
-    \begin{tabular}{l r r r}
-      \toprule
-      Method & FHR (\%) & Hit rate (\%) & Latency (ms) \\
-      \midrule
-      Exact hash            & 0.0 & 18.0 &  2 \\
-      Two-tier exact+sem.   & 0.4 & 42.0 &  7 \\
-      Cross-encoder rerank  & 0.5 & 50.0 & 41 \\
-      \addlinespace
-      Our calibrated policy & 0.3 & 66.0 & 12 \\
-      \bottomrule
-    \end{tabular}
-    \begin{tablenotes}\footnotesize
-      \item Placeholder values for the smoke test only; real numbers follow from experiments.
-    \end{tablenotes}
-  \end{threeparttable}
-\end{table}
+\input{sections/setup}
 
 \printbibliography
 

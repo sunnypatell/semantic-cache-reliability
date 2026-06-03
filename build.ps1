@@ -19,13 +19,9 @@ $src = Join-Path $PSScriptRoot 'paper'
 $build = Join-Path $env:LOCALAPPDATA 'cacherel-build'
 New-Item -ItemType Directory -Force $build | Out-Null
 
-Copy-Item (Join-Path $src 'main.tex') $build -Force
-Copy-Item (Join-Path $src 'references.bib') $build -Force
-$figsrc = Join-Path $src 'figures'
-if (Test-Path $figsrc) {
-  New-Item -ItemType Directory -Force (Join-Path $build 'figures') | Out-Null
-  Copy-Item (Join-Path $figsrc '*') (Join-Path $build 'figures') -Recurse -Force -ErrorAction SilentlyContinue
-}
+# Mirror the paper sources (sections/, figures/, *.tex, *.bib) to the local build dir,
+# excluding build artifacts and diagnostics. robocopy exit codes 0-7 mean success.
+$null = robocopy $src $build /E /NJH /NJS /NDL /NFL /NP /XF *.aux *.log *.bbl *.bcf *.blg *.fdb_latexmk *.fls *.run.xml *.synctex.gz *.out latexmk.run.txt p1.o.txt p1.e.txt p2.o.txt p2.e.txt /XD _diag
 
 Push-Location $build
 if ($Clean) { cmd /c "latexmk -C main.tex > nul 2>&1" }

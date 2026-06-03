@@ -1,0 +1,17 @@
+% Shared macros and notation.
+
+% A visible placeholder for a number to be filled from the final results.
+% Every \pending must be resolved before submission (grep for it).
+\newcommand{\pending}[1]{{\bfseries[#1]}}
+
+% Notation
+\newcommand{\simfun}{s}            % similarity score
+\newcommand{\thr}{\tau}            % decision threshold
+\newcommand{\query}{q}             % an incoming query
+\newcommand{\cached}{c}            % a cached entry
+\newcommand{\emb}[1]{\mathbf{e}_{#1}}
+\DeclareMathOperator{\cossim}{cos}
+\newcommand{\fhr}{\textsc{fhr}}    % false-hit rate
+\newcommand{\prauc}{\textsc{pr}\text{-}\textsc{auc}}
+\newcommand{\rocauc}{\textsc{roc}\text{-}\textsc{auc}}
+\newcommand{\Real}{\mathbb{R}}
