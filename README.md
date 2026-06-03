@@ -1,9 +1,15 @@
 # When Semantic Caches Lie
 
+<p align="center">
+  <img src="assets/teaser.png" width="90%"
+       alt="Cache-equivalence is not cosine similarity: a genuine paraphrase and a meaning-changing near-duplicate sit equally close to a cached prompt, yet only one may safely reuse the stored answer; the false hit leaves as a confident, unlogged wrong answer.">
+</p>
+
 **False hits, downstream cost, and calibration in embedding-based caching for large language models.**
 
 An independent research project by **Sunny Patel** ([ORCID 0009-0005-3863-7642](https://orcid.org/0009-0005-3863-7642), [sunnypatel.net](https://www.sunnypatel.net)).
 
+[![tests](https://github.com/sunnypatell/semantic-cache-reliability/actions/workflows/tests.yml/badge.svg)](https://github.com/sunnypatell/semantic-cache-reliability/actions/workflows/tests.yml)
 [![License: All Rights Reserved](https://img.shields.io/badge/license-All%20Rights%20Reserved-red.svg)](LICENSE)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--3863--7642-a6ce39.svg)](https://orcid.org/0009-0005-3863-7642)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)

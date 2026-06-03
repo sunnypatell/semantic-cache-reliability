@@ -3,3 +3,9 @@
 *.pdf binary
 *.jpg binary
 *.faiss binary
+
+# Keep the GitHub language bar honest: the reproducible artifact is the Python
+# package; the manuscript is documentation and results/data are generated outputs.
+paper/** linguist-documentation
+results/** linguist-generated
+data/** linguist-generated

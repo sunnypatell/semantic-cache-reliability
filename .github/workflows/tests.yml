@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
+# Copyright (c) 2026 Sunny Patel. All rights reserved.
+name: tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify released data integrity
+        run: cd data/processed && sha256sum -c SHA256SUMS
+      - name: Install core dependencies
+        # The metric / statistics / calibration tests are model-free, so the heavy
+        # embedding stack (torch, sentence-transformers) is intentionally not installed.
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy scipy scikit-learn pandas pytest
+          pip install -e .
+      - name: Run the metric and statistics tests
+        run: pytest -q
