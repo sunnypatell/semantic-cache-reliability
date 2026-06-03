@@ -10,7 +10,7 @@
 An independent research project by **Sunny Patel** ([ORCID 0009-0005-3863-7642](https://orcid.org/0009-0005-3863-7642), [sunnypatel.net](https://www.sunnypatel.net)).
 
 [![tests](https://github.com/sunnypatell/semantic-cache-reliability/actions/workflows/tests.yml/badge.svg)](https://github.com/sunnypatell/semantic-cache-reliability/actions/workflows/tests.yml)
-[![DOI](https://zenodo.org/badge/1257849044.svg)](https://doi.org/10.5281/zenodo.20532711)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20532711-1682D4)](https://doi.org/10.5281/zenodo.20532711)
 [![License: All Rights Reserved](https://img.shields.io/badge/license-All%20Rights%20Reserved-red.svg)](LICENSE)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--3863--7642-a6ce39.svg)](https://orcid.org/0009-0005-3863-7642)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)

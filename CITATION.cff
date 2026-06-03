@@ -37,7 +37,10 @@ preferred-citation:
       orcid: "https://orcid.org/0009-0005-3863-7642"
       affiliation: Independent Researcher
   year: 2026
-  # Fill the venue/identifier once posted (keep the DOI a TODO until it resolves):
+  doi: "10.5281/zenodo.20532711"
+  url: "https://doi.org/10.5281/zenodo.20532711"
+  notes: "Independent research preprint, archived on Zenodo; the arXiv identifier will be added on posting."
+  # On arXiv posting, set the canonical preprint venue/identifier:
   # journal: "arXiv preprint"
   # identifiers:
   #   - type: other
