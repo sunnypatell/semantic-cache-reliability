@@ -20,13 +20,14 @@ keywords:
   - false-hit rate
   - calibration
   - retrieval-augmented generation
-# identifiers:        # uncomment and fill once the arXiv / Zenodo DOI is minted at release
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.20532711
+    description: "Zenodo archive (concept DOI; resolves to the latest version)"
+# arXiv DOI added on posting:
 #   - type: doi
 #     value: 10.48550/arXiv.XXXX.XXXXX
 #     description: "arXiv preprint DOI"
-#   - type: doi
-#     value: 10.5281/zenodo.XXXXXXX
-#     description: "Zenodo archive of the code and dataset"
 preferred-citation:
   type: article
   title: "When Semantic Caches Lie: False Hits, Downstream Cost, and Calibration in Embedding-Based Caching for Large Language Models"

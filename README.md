@@ -10,12 +10,12 @@
 An independent research project by **Sunny Patel** ([ORCID 0009-0005-3863-7642](https://orcid.org/0009-0005-3863-7642), [sunnypatel.net](https://www.sunnypatel.net)).
 
 [![tests](https://github.com/sunnypatell/semantic-cache-reliability/actions/workflows/tests.yml/badge.svg)](https://github.com/sunnypatell/semantic-cache-reliability/actions/workflows/tests.yml)
+[![DOI](https://zenodo.org/badge/1257849044.svg)](https://doi.org/10.5281/zenodo.20532711)
 [![License: All Rights Reserved](https://img.shields.io/badge/license-All%20Rights%20Reserved-red.svg)](LICENSE)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--3863--7642-a6ce39.svg)](https://orcid.org/0009-0005-3863-7642)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
-<!-- Replace the IDs and uncomment at release:
+<!-- arXiv badge added on posting:
 [![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
 -->
 
 > A semantic cache reuses a stored answer whenever a new prompt's embedding is close enough
@@ -101,7 +101,8 @@ all rights reserved; see [`LICENSE`](LICENSE). The paper and figures retain full
 reproduction and verification only; the dataset is for non-commercial research use with
 attribution. Any reuse, redistribution, or derivative work requires written permission and
 must credit the author. Authorship and priority are established by the public, timestamped
-arXiv record and ORCID. The dataset is derived from third-party corpora (QQP, MRPC, PAWS)
+record (the Zenodo DOI and this repository; the arXiv record on posting) and ORCID. The
+dataset is derived from third-party corpora (QQP, MRPC, PAWS)
 that retain their own licenses; the author claims rights only over the equivalence labels,
 sampling, and arrangement, not the underlying source text (see [`NOTICE.md`](NOTICE.md)).
 
@@ -110,9 +111,12 @@ sampling, and arrangement, not the underlying source text (see [`NOTICE.md`](NOT
 All code, the labeled cache-equivalence dataset, and the scripts that regenerate every table
 and figure live in this repository and are versioned (`v0.1.0`); data integrity is verifiable
 with `shasum -a 256 -c data/processed/SHA256SUMS`. The dataset is derived from the public QQP,
-MRPC, and PAWS corpora, which retain their own licenses (see [`NOTICE.md`](NOTICE.md)). An
-archival DOI (Zenodo) and the arXiv record will be linked here on release.
+MRPC, and PAWS corpora, which retain their own licenses (see [`NOTICE.md`](NOTICE.md)). The
+repository is archived on Zenodo: [10.5281/zenodo.20532711](https://doi.org/10.5281/zenodo.20532711)
+(concept DOI, resolves to the latest version). The arXiv record will be linked here on posting.
 
 ## Citation
 
-See [`CITATION.cff`](CITATION.cff). A DOI will be minted on release.
+See [`CITATION.cff`](CITATION.cff). Archived on Zenodo:
+[10.5281/zenodo.20532711](https://doi.org/10.5281/zenodo.20532711) (concept DOI; resolves to the
+latest version). The arXiv preprint identifier will be added on posting.
