@@ -1,9 +1,9 @@
 \section{Calibrating the threshold to cost}
 \label{sec:calibration}
 
-The frontier in \cref{sec:results} shows the trade-off; it does not pick a point on it.
-Picking the point is the threshold-setting problem, and the right point depends on how much a
-false hit costs relative to a miss. A miss recomputes an answer the cache could have reused,
+The frontier in \cref{sec:results} shows the trade-off but does not choose where on it to
+operate. That choice is the threshold-setting problem, and it depends on how much a false hit
+costs relative to a miss. A miss recomputes an answer the cache could have reused,
 costing one model call. A false hit serves a wrong answer, costing the downstream damage
 measured in \cref{sec:downstream} plus, often, the eventual recomputation. The two are not
 symmetric, and the asymmetry is the whole decision.
@@ -21,7 +21,7 @@ correctness-bounding caches such as verified caching~\cite{schroeder2025vcache}.
 \end{equation}
 where a correct hit saves a call, a miss costs one, and a false hit costs $c_{\mathrm{fh}}$
 calls. The penalty is a deployment choice that folds the eventual recompute together with the
-reputational and task cost of a wrong answer, which \cref{sec:downstream} shows is large. It is
+reputational and task cost of a wrong answer (\cref{sec:downstream} shows it is large). It is
 the only free input, so the policy needs no per-prompt online feedback. We report a plausible
 bracket, $c_{\mathrm{fh}} \in \{5, 20\}$; the conclusions below are not an artifact of one
 penalty, because a larger penalty only pushes the chosen threshold higher, as it should.
@@ -47,7 +47,7 @@ hand-set error target.
 \paragraph{Transfer.}
 A threshold is only useful if it survives a change of domain, and here it does so in only one
 direction. A conservative threshold calibrated on the adversarial domain, which sits near
-$1.0$, transfers to the easier domains at a cost gap of at most about $0.07$ per query, and
+$1.0$, transfers to the easier domains at a cost gap no greater than $0.072$ per query, and
 under $0.02$ for most encoders. The reverse is ruinous: the $0.97$ threshold that is right for
 news, applied to adversarial traffic, leaks so many false hits that expected cost jumps to
 $7.1$, a gap of more than six calls per query.

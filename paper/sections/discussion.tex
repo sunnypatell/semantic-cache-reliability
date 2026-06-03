@@ -4,13 +4,12 @@
 \paragraph{Construct validity.}
 The central risk is the one we have been explicit about: our labels encode paraphrase and
 question-duplication, and we read them as cache-equivalence. The two come apart at the
-edges. Two duplicate questions can warrant slightly different answers in context, and two
-non-paraphrases can occasionally share an answer. We accept this gap deliberately, because
+edges, and the gap runs both ways: a labeled non-paraphrase may occasionally admit the same
+answer, which inflates the measured false-hit rate, while a labeled paraphrase may need a
+different answer in context, which deflates it. We accept this gap deliberately, because
 the alternative, bespoke answer-equivalence annotation at scale, would trade a transparent,
-reproducible label for a private one. We do not claim the residual bias favors our thesis; it
-could run either way, since a labeled non-paraphrase may occasionally admit the same answer
-(inflating the measured rate) while a labeled paraphrase may need a different one in context
-(deflating it). The claim is narrower: the labels track a public, reproducible notion of
+reproducible label for a private one. We therefore do not claim the residual bias favors our
+thesis. The claim is narrower: the labels track a public, reproducible notion of
 sameness, and the adversarial domain is built to isolate exactly the case a similarity cache
 cannot resolve, near-identical wording with divergent meaning. The numbers should be read as
 the reliability of the similarity proxy against that human notion of sameness, which is the

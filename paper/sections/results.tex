@@ -34,7 +34,7 @@ against $0.74$ to $0.78$, yet on the adversarial domain it \emph{outscores every
 encoder}, $0.66$ against at most $0.62$. The inversion is not a sampling artifact. A paired
 bootstrap over the shared pairs puts \mbox{TF-IDF}'s \prauc{} above every neural encoder by
 $0.04$ to $0.12$ and its \rocauc{} by $0.06$ to $0.13$, and each of the twelve gaps survives a
-Benjamini--Hochberg correction across the comparison family (largest corrected $p = 0.003$).
+Benjamini--Hochberg correction across the comparison family (largest corrected $p < 0.003$).
 Word-scrambling defeats the semantics the neural models encode, while the bigram structure the
 lexical model reads survives it. The very
 property that makes an embedding useful, its insensitivity to surface form, is also what
@@ -61,8 +61,8 @@ questions it serves under $1\%$; on the adversarial domain it serves essentially
 Loosening the ceiling to $5\%$ raises news coverage to about $24\%$ but leaves questions
 under $3\%$ and the adversarial domain under $1\%$. The news frontier is the most forgiving
 because its pairs are the least lexically confusable; the adversarial frontier is the
-warning, because it is the case a real cache meets whenever two prompts differ in a small
-but decisive word.
+cautionary case, because it is the one a real cache meets whenever two prompts differ in a
+small but decisive word.
 
 \subsection{Why: the grey zone}
 \label{sec:results-greyzone}
