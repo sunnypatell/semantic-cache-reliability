@@ -1,0 +1,16 @@
+condition,p,f1,drop_per_point
+context cache (wrong passage),0.0,0.7899,0.7753
+context cache (wrong passage),0.01,0.7822,0.7753
+context cache (wrong passage),0.02,0.7744,0.7753
+context cache (wrong passage),0.05,0.7512,0.7753
+context cache (wrong passage),0.1,0.7124,0.7753
+context cache (truncated passage),0.0,0.7899,0.4812
+context cache (truncated passage),0.01,0.7851,0.4812
+context cache (truncated passage),0.02,0.7803,0.4812
+context cache (truncated passage),0.05,0.7659,0.4812
+context cache (truncated passage),0.1,0.7418,0.4812
+answer cache (wrong answer),0.0,0.7899,0.7865
+answer cache (wrong answer),0.01,0.7821,0.7865
+answer cache (wrong answer),0.02,0.7742,0.7865
+answer cache (wrong answer),0.05,0.7506,0.7865
+answer cache (wrong answer),0.1,0.7113,0.7865

@@ -20,25 +20,36 @@ correctness-bounding caches such as verified caching~\cite{schroeder2025vcache}.
   \label{eq:cost}
 \end{equation}
 where a correct hit saves a call, a miss costs one, and a false hit costs $c_{\mathrm{fh}}$
-calls, the penalty estimated in \cref{sec:downstream}. The only domain-specific input is the
-measured penalty, so the policy needs no per-prompt online feedback.
+calls, a penalty that \cref{sec:downstream} shows is large because a false hit destroys most
+of the served answer. The only free input is this penalty, so the policy needs no per-prompt
+online feedback; we report results across $c_{\mathrm{fh}} \in \{5, 20\}$.
 
 \paragraph{Results.}
-\pending{Under an asymmetric penalty, the cost-aware policy lowers expected cost relative to
-both the fixed default and the ceiling policy by $X$ on average, with the gap widening as the
-penalty grows, because the fixed and ceiling policies ignore the cost ratio that the
-cost-aware policy optimizes.} \pending{Against verified caching's online per-prompt
-thresholds, our static cost-aware threshold matches its reliability while removing the need
-for correctness feedback, at a cost of $Y$ in coverage.} We summarize the comparison in
-\cref{tab:calibration}.
+The comparison in \cref{tab:calibration} is stark. At a false-hit penalty of
+$c_{\mathrm{fh}}=20$, the fixed $\thr=0.80$ default costs $6.3$ model calls per query against
+the always-recompute baseline of $1.0$, because at that threshold the cache fires on most
+queries while leaking a $39\%$ false-hit rate. A cache run on a fixed default is not a small
+loss; it is several times more expensive than not caching at all. Both principled policies
+avoid the disaster by retreating to a near-saturating threshold, and both land at almost
+exactly the baseline cost ($0.99$). The cache earns a genuine saving only where the domain
+allows it: on news the cost-aware policy holds the false-hit rate near zero while still
+serving enough to cut expected cost by about $7\%$ for E5-large; on questions it roughly
+breaks even; on the adversarial domain it correctly serves almost nothing, because any
+coverage there costs more in false hits than it saves. The cost-aware and ceiling policies
+track each other closely, with neither strictly dominating; the value of the cost-aware form
+is that it derives the operating point from the measured cost ratio rather than from a
+hand-set error target.
 
 \paragraph{Transfer.}
-A threshold is only useful if it survives a change of domain. \pending{Calibrating the
-cost-aware policy on one domain and applying it to another raises expected cost by only $Z$
-relative to calibrating in-domain, provided the embedding model is held fixed; transfer fails
-when the model changes, which is consistent with the cross-encoder incomparability of cosine
-scores.} The recommendation that follows is concrete: recalibrate when the encoder changes,
-but a threshold learned on one domain is a usable starting point for a related one.
+A threshold is only useful if it survives a change of domain, and here it does so in only one
+direction. A conservative threshold calibrated on the adversarial domain, which sits near
+$1.0$, transfers to the easier domains with a cost gap below $0.06$ per query. The reverse is
+ruinous: the $0.97$ threshold that is right for news, applied to adversarial traffic, leaks
+so many false hits that expected cost jumps to $7.1$, a gap of more than six calls per query.
+A threshold learned where the cache works cannot be trusted where it does not. The
+recommendation is concrete: calibrate per domain, and when in doubt err toward the
+conservative threshold, because the cost of an over-tight cache is a few missed reuses while
+the cost of an over-loose one is unbounded.
 
 % Generated from results/calibration_summary.csv by experiments/make_tables.py
 \input{tables/calibration_table}

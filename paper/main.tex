@@ -105,11 +105,14 @@ map the false-hit rate of six sentence-embedding models across three domains and
 full range of thresholds, with bootstrap confidence intervals, and report the operating
 points deployments care about. We then inject false hits into retrieval and generation
 to measure what they cost once served, and we calibrate the threshold to that cost.
-\pending{One- or two-sentence headline finding, filled from final results.} A cost-aware
-policy that ties the operating point to the measured penalty of a false hit improves the
-cost--coverage frontier over fixed and correctness-bounding thresholds, and it transfers
-across domains. The results caution against trusting a single similarity threshold, and
-they give practitioners a principled way to set one.
+On adversarial near-duplicate prompts every embedding, including the largest, separates
+equivalent from non-equivalent pairs barely above chance, and a lexical baseline beats them
+all; holding the false-hit rate under one percent caps coverage near nine percent on the
+easiest domain and under one percent on the rest. A fixed threshold proves catastrophic
+under a realistic false-hit penalty, costing several times the price of not caching; a
+cost-aware threshold tied to the measured penalty recovers near-baseline cost, but a value
+calibrated on an easy domain is ruinous on a hard one. The results caution against trusting a
+single similarity threshold, and they give practitioners a principled way to set one.
 \end{abstract}
 
 \input{sections/introduction}

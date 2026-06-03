@@ -65,15 +65,30 @@ def main() -> None:
     ap.add_argument("--model", default="distilbert-base-cased-distilled-squad")
     args = ap.parse_args()
 
+    import torch
     from datasets import load_dataset
-    from transformers import pipeline
+    from transformers import AutoModelForQuestionAnswering, AutoTokenizer
 
     ds = load_dataset("rajpurkar/squad", split="validation")
     rng = np.random.default_rng(args.seed)
     idx = rng.choice(len(ds), size=min(args.n, len(ds)), replace=False)
     rows = [ds[int(i)] for i in idx]
 
-    reader = pipeline("question-answering", model=args.model, device=-1)
+    tok = AutoTokenizer.from_pretrained(args.model)
+    qa_model = AutoModelForQuestionAnswering.from_pretrained(args.model)
+    qa_model.eval()
+
+    def answer(question: str, context: str) -> str:
+        enc = tok(question, context, return_tensors="pt", truncation="only_second",
+                  max_length=384)
+        with torch.no_grad():
+            out = qa_model(**enc)
+        start = int(out.start_logits.argmax())
+        end = int(out.end_logits.argmax())
+        if end < start:
+            end = start
+        ids = enc["input_ids"][0][start:end + 1]
+        return tok.decode(ids, skip_special_tokens=True)
 
     # A pool of distinct contexts and gold answers for "non-equivalent" injection.
     contexts = [r["context"] for r in rows]
@@ -86,9 +101,9 @@ def main() -> None:
         golds = r["answers"]["text"] or [""]
         wrong_ctx = contexts[shifted[i]]
         # Reader answers under correct and faulted contexts.
-        f1_correct = best_f1(reader(question=q, context=r["context"])["answer"], golds)
-        f1_wrong_ctx = best_f1(reader(question=q, context=wrong_ctx)["answer"], golds)
-        f1_trunc = best_f1(reader(question=q, context=r["context"][: max(1, len(r["context"]) // 4)])["answer"], golds)
+        f1_correct = best_f1(answer(q, r["context"]), golds)
+        f1_wrong_ctx = best_f1(answer(q, wrong_ctx), golds)
+        f1_trunc = best_f1(answer(q, r["context"][: max(1, len(r["context"]) // 4)]), golds)
         # Answer-cache false hit: a different question's gold answer is returned verbatim.
         f1_wrong_ans = best_f1(gold_answers[shifted[i]], golds)
         recs.append(dict(f1_correct=f1_correct, f1_wrong_ctx=f1_wrong_ctx,

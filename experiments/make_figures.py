@@ -168,10 +168,39 @@ def fig_score_overlap(reports) -> None:
         ax.set_title(DOMAIN_LABEL[dom])
         ax.set_xlabel("cosine similarity")
     axes[0].set_ylabel("density")
-    axes[0].legend(loc="upper left", fontsize=6)
-    fig.suptitle(f"{ENCODER_LABEL[enc]} score overlap", fontsize=9, y=1.02)
+    axes[0].legend(loc="upper left", fontsize=6, title=ENCODER_LABEL[enc], title_fontsize=6)
     fig.tight_layout()
     _save(fig, "fig_score_overlap")
+
+
+def fig_downstream(_reports=None) -> None:
+    """End-to-end task F1 as a function of the injected false-hit rate, by fault position."""
+    import pandas as pd
+    path = ROOT / "results" / "downstream_summary.csv"
+    if not path.exists():
+        print("[fig] downstream_summary.csv missing; skipping fig_downstream")
+        return
+    df = pd.read_csv(path)
+    label = {
+        "answer cache (wrong answer)": "answer cache",
+        "context cache (wrong passage)": "context cache (wrong passage)",
+        "context cache (truncated passage)": "context cache (truncated)",
+    }
+    color = {
+        "answer cache (wrong answer)": "#D55E00",
+        "context cache (wrong passage)": "#0072B2",
+        "context cache (truncated passage)": "#009E73",
+    }
+    fig, ax = plt.subplots(figsize=(3.4, 2.5))
+    for cond, g in df.groupby("condition"):
+        g = g.sort_values("p")
+        ax.plot(g["p"] * 100, g["f1"], marker="o", markersize=3, linewidth=1.1,
+                color=color.get(cond, "#000000"), label=label.get(cond, cond))
+    ax.set_xlabel("injected false-hit rate (%)")
+    ax.set_ylabel(r"end-to-end token $F_1$")
+    ax.legend(fontsize=6.5, loc="lower left")
+    fig.tight_layout()
+    _save(fig, "fig_downstream")
 
 
 def fig_coverage_bars(reports) -> None:
@@ -192,7 +221,9 @@ def fig_coverage_bars(reports) -> None:
     ax.set_xticks(x)
     ax.set_xticklabels([ENCODER_LABEL[e] for e in encs], rotation=25, ha="right")
     ax.set_ylabel(r"coverage at FHR $\leq$ 1%")
-    ax.set_ylim(0, 1)
+    # Every value is below 0.10 (the point of the figure), so zoom in to make the
+    # model and domain differences legible while the absolute scale stays low.
+    ax.set_ylim(0, 0.20)
     ax.legend(loc="upper right", fontsize=7)
     fig.tight_layout()
     _save(fig, "fig_coverage_bars")
@@ -240,6 +271,7 @@ def main() -> None:
     fig_score_overlap(reports)
     fig_coverage_bars(reports)
     fig_heatmap(reports)
+    fig_downstream()
 
 
 if __name__ == "__main__":

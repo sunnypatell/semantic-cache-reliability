@@ -20,16 +20,21 @@ and the operating points a deployment would actually run.
 
 \subsection{Separability across models and domains}
 \label{sec:results-auc}
-\Cref{fig:heatmap} summarizes threshold-free separability as \prauc{} for every
-encoder--domain pair. Two patterns hold across all six encoders. First, the domain matters
-more than the model: \pending{the spread across domains for a fixed encoder is larger than
-the spread across encoders for a fixed domain}. Second, the adversarial domain is close to
-unsolved: \pending{the best encoder reaches only \prauc${}=X$ on \mbox{PAWS}, against a base
-rate of $0.44$, and its \rocauc{} of $Y$ is barely above the $0.5$ of chance}. Larger
-encoders help, but the gain is small next to the domain gap: \pending{moving from the
-smallest to the largest model raises \mbox{PAWS} \prauc{} by only $Z$}. The lexical control
-\pending{trails the neural encoders on questions and news but is competitive on
-\mbox{PAWS}, where neither lexical overlap nor learned semantics separates the classes}.
+\Cref{fig:heatmap} and \cref{tab:separability} summarize threshold-free separability as
+\prauc{} for every encoder--domain pair. Three patterns hold. First, the domain matters
+more than the model. For a fixed encoder the spread of \prauc{} across domains is wide,
+$0.62$ to $0.90$ for E5-large, while the spread across the six neural encoders within a
+fixed domain is narrow, $0.54$ to $0.62$ on the adversarial set. Second, the adversarial
+domain is close to unsolved: the best encoder reaches \prauc${}=0.62$ on \mbox{PAWS} against
+a base rate of $0.44$, and its \rocauc{} of $0.67$ is barely above the $0.5$ of chance.
+Scale buys little: moving from E5-small to E5-large raises \mbox{PAWS} \prauc{} by $0.08$,
+and the \mbox{BGE} base-to-large gain is $0.04$. Third, and most telling, the lexical control
+inverts the order. \mbox{TF-IDF} trails the neural encoders badly on questions, $0.49$
+against $0.74$ to $0.78$, yet on the adversarial domain it \emph{outscores every neural
+encoder}, $0.66$ against at most $0.62$. Word-scrambling defeats the semantics the neural
+models encode, while the bigram structure the lexical model reads survives it. The very
+property that makes an embedding useful, insensitivity to surface form, is what makes it
+blind to an adversarial paraphrase.
 
 \begin{figure}[t]
   \centering
@@ -46,22 +51,24 @@ smallest to the largest model raises \mbox{PAWS} \prauc{} by only $Z$}. The lexi
 \subsection{The false-hit/coverage frontier}
 \label{sec:results-frontier}
 \Cref{fig:frontier} reads the same data as an operating curve. To hold the false-hit rate
-under $1\%$, a deployment must move far up the threshold, and coverage falls with it:
-\pending{on questions the best encoder serves only X\% of traffic at a $1\%$ ceiling; on
-news, Y\%; on the adversarial domain, essentially none}. The shape of the news frontier is
-the most forgiving because its pairs are the least lexically confusable; the adversarial
-frontier is the warning, because it is the case a real cache will meet whenever two prompts
-differ in a small but decisive word.
+under $1\%$, a deployment must move far up the threshold, and coverage falls with it. On
+news the best encoder (E5-large) serves about $9\%$ of traffic at a $1\%$ ceiling; on
+questions it serves under $1\%$; on the adversarial domain it serves essentially nothing.
+Loosening the ceiling to $5\%$ raises news coverage to about $24\%$ but leaves questions
+under $3\%$ and the adversarial domain under $1\%$. The news frontier is the most forgiving
+because its pairs are the least lexically confusable; the adversarial frontier is the
+warning, because it is the case a real cache meets whenever two prompts differ in a small
+but decisive word.
 
 \subsection{Why: the grey zone}
 \label{sec:results-greyzone}
-\Cref{fig:scores} shows where the failure comes from. For the strongest encoder, the
-similarity scores of equivalent and non-equivalent pairs are well separated on questions
-but pile into the same narrow, high band on the adversarial domain. \pending{On
-\mbox{PAWS}, the median similarity of non-equivalent pairs is within $\delta$ of the median
-of equivalent pairs, so no threshold can divide them.} A cache cannot act on a distinction
-its encoder does not represent, and on adversarial near-duplicates the encoder does not
-represent it.
+\Cref{fig:scores} shows where the failure comes from. For \mbox{BGE-large}, the similarity
+scores of equivalent and non-equivalent pairs are well separated on questions but pile into
+the same narrow, high band on the adversarial domain. On \mbox{PAWS} the median similarity
+of equivalent and non-equivalent pairs differs by only $0.011$, both above $0.97$, against a
+gap of $0.19$ on questions; no threshold can divide distributions that overlap this tightly.
+A cache cannot act on a distinction its encoder does not represent, and on adversarial
+near-duplicates the encoder does not represent it.
 
 \begin{figure}[t]
   \centering
@@ -76,9 +83,9 @@ represent it.
 \subsection{Operating points}
 \label{sec:results-operating}
 \Cref{fig:coverage} states the headline as a single number per encoder and domain: the
-coverage a cache can deliver while keeping its false-hit rate at or below $1\%$.
-\pending{Across encoders the achievable coverage at a $1\%$ ceiling is X--Y\% on questions,
-A--B\% on news, and below C\% on the adversarial domain.} The practitioner's takeaway is
+coverage a cache can deliver while keeping its false-hit rate at or below $1\%$. Across
+encoders the achievable coverage is under $1\%$ on questions, between roughly $0.5\%$ and
+$9\%$ on news, and below $0.5\%$ on the adversarial domain. The practitioner's takeaway is
 blunt: a single global threshold chosen for a clean domain will leak false hits in a harder
 one, and there is no threshold that makes the adversarial domain both safe and useful.
 

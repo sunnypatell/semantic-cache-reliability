@@ -53,8 +53,9 @@ def separability_table() -> None:
   \begin{threeparttable}
     \caption{Threshold-free separability (\prauc{}) with $95\%$ bootstrap intervals, for
       every encoder and domain. The adversarial column stays near its $0.44$ base rate for
-      every encoder, including the largest; the lexical control is competitive there because
-      neither lexical overlap nor learned semantics separates the classes.}
+      every neural encoder, including the largest; remarkably, the lexical control outscores
+      them all there, because word-scrambling defeats semantic similarity while the bigram
+      structure it reads does not.}
     \label{tab:separability}
     \begin{tabular}{l c c c}
       \toprule

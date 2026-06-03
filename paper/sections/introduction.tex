@@ -50,14 +50,19 @@ under the measured, asymmetric penalty of a false hit, and it transfers across m
 and domains without the per-prompt online feedback that earlier correctness-bounding
 methods require.
 
-Our findings are not reassuring for the default of trusting a single similarity
-threshold. \pending{headline: on adversarial paraphrases the strongest embedding
-separates equivalent from non-equivalent pairs barely above chance}. \pending{headline:
-to hold the false-hit rate under one percent, even the best model serves only a small
-fraction of queries}. \pending{headline: false hits degrade downstream task quality by
-X, and the damage depends on where in the pipeline the cache sits}. \pending{headline:
-cost-aware calibration shifts the cost-coverage frontier relative to fixed and
-correctness-bounding thresholds, and transfers across domains with a small gap}.
+Our findings are not reassuring for the default of trusting a single similarity threshold.
+On adversarial paraphrases the strongest embedding reaches a \rocauc{} of only $0.67$, and a
+lexical baseline outscores every neural encoder, because the surface-form insensitivity that
+makes an embedding useful is exactly what blinds it to a word-scrambled near-duplicate.
+Holding the false-hit rate under one percent caps coverage near nine percent on the easiest
+domain and under one percent on the others. Downstream, a false hit is nearly as costly when it
+corrupts the retrieved context as when it corrupts the final answer, because the reader rarely
+recovers from a wrong premise; what softens the damage is a milder corruption, not an earlier
+position in the pipeline. A fixed similarity threshold proves
+catastrophic under a realistic false-hit penalty, costing several times the price of not
+caching at all, while a threshold calibrated to the measured penalty recovers near-baseline
+cost and adapts to each domain's difficulty. Such a threshold transfers only in the
+conservative direction: a value tuned on an easy domain is ruinous when reused on a hard one.
 
 \paragraph{Contributions.}
 \begin{itemize}
@@ -72,9 +77,10 @@ correctness-bounding thresholds, and transfers across domains with a small gap}.
         fault injection into retrieval and generation, broken down by task and by the
         cache's position in the pipeline (\cref{sec:downstream}).
   \item A cost-aware threshold-calibration policy that ties the operating point to the
-        measured cost of a false hit and transfers across models and domains without
-        online feedback, with an honest comparison to fixed and correctness-bounding
-        baselines (\cref{sec:calibration}).
+        measured cost of a false hit. It exposes that a fixed default is catastrophic under a
+        realistic penalty, matches a correctness-bounding baseline without a hand-set error
+        target, and reveals that thresholds transfer across domains only in the conservative
+        direction (\cref{sec:calibration}).
 \end{itemize}
 
 All code, the labeled data, and the exact commands that regenerate every number and

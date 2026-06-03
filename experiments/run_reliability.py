@@ -122,6 +122,7 @@ def main() -> None:
     if not args.no_lexical:
         for name, ps in pairsets.items():
             enc = LexicalEncoder()
+            t0 = time.time()
             try:
                 rep = reliability_report(enc, ps, n_boot=args.n_boot, seed=args.seed)
             except Exception as exc:

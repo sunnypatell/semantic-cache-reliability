@@ -1,30 +1,43 @@
 \section{What a false hit costs downstream}
 \label{sec:downstream}
 
-A false-hit rate is only as important as the damage a false hit does once it is served.
-Whether that damage is severe or absorbed depends on where the cache sits. A cache on the
-final answer returns the wrong answer outright. A cache earlier in the pipeline, for example
-on the retrieved context of a retrieval-augmented generator, hands a downstream model a wrong
-premise and lets it recover or compound the error.
+A false-hit rate matters only as much as the damage a false hit does once it is served, and
+that damage depends both on where the cache sits and on how badly it corrupts what the system
+sees. A cache on the final answer returns a wrong answer outright. A cache earlier in the
+pipeline, on the retrieved context of a retrieval-augmented generator, hands the reader a
+wrong premise; whether the reader recovers is an empirical question, and the answer turns out
+to be mostly no.
 
 \paragraph{Protocol.}
-We measure both positions by controlled fault injection on a retrieval-augmented question
-answering task. For each test question we run the generator twice: once with its correct
-context or answer, and once after injecting a false hit, in which the cache substitutes the
-stored response of a \emph{non-equivalent} earlier query drawn from the same labeled pool. We
-vary the injected false-hit rate over $\{1, 2, 5, 10\}\%$ and report the resulting drop in
-end-to-end answer quality (exact match and token~$F_1$, with a semantic-similarity check to
-credit near-misses). To show the conclusion does not depend on how a false hit is
-manufactured, we use three injection models: substituting a confident wrong answer, a
-truncated answer, and a plausible answer to a different question.
+We inject false hits into an extractive question-answering reader and measure end-to-end
+token $F_1$ against the reference answers. For each test question the reader runs on its
+correct context and on three faulted inputs that place a false hit at different points: a
+\emph{wrong answer} served directly (the answer-cache position, where a different question's
+stored answer is returned verbatim), a \emph{wrong passage} fed to the reader (the
+context-cache position, where a different question's passage is retrieved), and a
+\emph{truncated passage} (a milder corruption of the same position). Because each question is
+faulted independently with probability $p$, end-to-end $F_1$ at injected false-hit rate $p$ is
+the exact mixture $(1-p)\,F_1^{\text{correct}} + p\,F_1^{\text{fault}}$, which we report for
+$p \in \{1,2,5,10\}\%$ over $400$ questions with a fixed reader.
 
 \paragraph{Findings.}
-\pending{False hits propagate with task- and position-dependent severity. A false hit on the
-final answer costs the full answer; a false hit on the retrieved context costs $X$ of task
-$F_1$ per injected point because the generator sometimes overrides a wrong premise.}
-\pending{Across injection models the per-point cost is stable to within $Y$, so the
-trade-off the next section calibrates against is robust to the exact failure mode.} The
-practical reading is that the same false-hit rate is not equally tolerable everywhere: a
-cache deep in a forgiving pipeline can run a looser threshold than a cache that speaks
-directly to the user, and the calibration in \cref{sec:calibration} turns that observation
-into a number.
+The reader scores $F_1 = 0.79$ on correct context. \Cref{fig:downstream} shows what a false
+hit costs. Position does not protect the answer: a wrong served answer drops $F_1$ by $0.79$
+per unit of false-hit rate, and a wrong retrieved passage drops it by almost as much, $0.78$,
+because the reader almost never extracts the right answer from a wholly wrong passage. What
+changes the cost is the \emph{severity} of the corruption, not the position. A truncated
+passage costs only $0.48$ per unit, because the answer survives the truncation often enough
+for the reader to find it. Concretely, at a $10\%$ false-hit rate end-to-end $F_1$ falls from
+$0.79$ to $0.71$ for a wrong answer or a wrong passage, and to $0.74$ for a truncated one. The
+lesson for calibration is blunt: a false hit is expensive wherever it lands, so the penalty
+the next section trades against is large, and the common hope that a downstream reader will
+quietly absorb a wrong cached premise is not supported here.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.78\linewidth]{figures/fig_downstream}
+  \caption{End-to-end reader $F_1$ as the injected false-hit rate rises, for a false hit on
+    the final answer and on the retrieved passage (wrong or truncated). A wrong answer and a
+    wrong passage are almost equally damaging; only a partial corruption is gentler.}
+  \label{fig:downstream}
+\end{figure}
