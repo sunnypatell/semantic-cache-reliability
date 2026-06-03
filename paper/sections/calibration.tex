@@ -45,8 +45,29 @@ one penalty, because a larger penalty only pushes the chosen threshold higher, a
 \end{algorithmic}
 \end{algorithm}
 
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_calibration}
+  \caption{\textbf{A fixed threshold is catastrophic under a realistic penalty; a calibrated
+    one is not.} \textbf{(a)}~Expected cost per query, in model calls against the
+    always-recompute baseline of $1$, for the three policies at two false-hit penalties,
+    averaged over encoders and domains (the numbers behind \cref{tab:calibration}). The fixed
+    $\thr=0.80$ default costs several times the baseline and worsens as the penalty rises,
+    while the ceiling and cost-aware policies sit on it. \textbf{(b)}~Why: the fixed threshold
+    serves the same $39\%$ false-hit rate whatever the penalty, because its operating point
+    never moves, while the principled policies hold the rate far lower, the cost-aware one
+    tightening as the penalty grows.}
+  \Description{Two bar-chart panels. Panel (a) plots expected cost per query for three
+    threshold policies at false-hit penalties of five and twenty; the fixed-threshold bars
+    tower far above a dashed no-cache baseline at one, growing from about 1.8 to 6.3, while the
+    ceiling and cost-aware bars sit on the baseline near 0.99. Panel (b) plots the served
+    false-hit rate; the fixed bar stays at 39 percent at both penalties while the ceiling and
+    cost-aware bars are far lower, around 6 to 12 percent.}
+  \label{fig:calibration}
+\end{figure}
+
 \paragraph{Results.}
-The comparison in \cref{tab:calibration} is stark. At a false-hit penalty of
+The comparison in \cref{tab:calibration,fig:calibration} is stark. At a false-hit penalty of
 $\cfh=20$, the fixed $\thr=0.80$ default costs $6.3$ model calls per query against
 the always-recompute baseline of $1.0$, because at that threshold the cache fires on most
 queries while leaking a $39\%$ false-hit rate. A cache run on a fixed default is not a small
@@ -65,7 +86,7 @@ hand-set error target.
 
 \paragraph{Transfer.}
 A threshold is only useful if it survives a change of domain, and here it does so in only one
-direction. A conservative threshold calibrated on the adversarial domain, which sits near
+direction~(\cref{fig:transfer}). A conservative threshold calibrated on the adversarial domain, which sits near
 $1.0$, transfers to the easier domains at a cost gap no greater than $0.072$ per query, and
 under $0.02$ for most encoders. The reverse is ruinous: the $0.97$ threshold that is right for
 news, applied to adversarial traffic, leaks so many false hits that expected cost jumps to

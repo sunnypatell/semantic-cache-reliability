@@ -117,6 +117,16 @@
 \clubpenalty=10000
 \frenchspacing  % single inter-sentence spacing (Bringhurst/Butterick), the modern standard
 
+%% --- Float placement -------------------------------------------------------
+%% Relax LaTeX's conservative defaults so figures stay near their references in
+%% float-dense sections (rather than drifting pages forward); standard tuned values.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+
 %% --- Title -------------------------------------------------------------------
 \title{\bfseries When Semantic Caches Lie\\[5pt]
 {\normalfont\large Why One Similarity Threshold Cannot Make an LLM Cache Both Safe and Useful Across Domains}}

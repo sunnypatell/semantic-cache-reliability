@@ -306,6 +306,90 @@ def fig_heatmap(reports) -> None:
     _save(fig, "fig_heatmap")
 
 
+def fig_calibration(_reports=None) -> None:
+    """Calibration result, both panels straight from results/calibration_summary.csv.
+    (a) expected cost per query by policy at two false-hit penalties, averaged over encoders
+    and domains: a fixed default is several times the no-cache baseline, while both principled
+    policies sit on it. (b) the cost-aware policy's cost per domain at the high penalty: it
+    earns a real saving only where the domain allows and otherwise declines to cache."""
+    import pandas as pd
+    df = pd.read_csv(ROOT / "results" / "calibration_summary.csv")
+
+    def _kind(p):
+        p = str(p)
+        return "fixed" if p.startswith("fixed") else "ceiling" if p.startswith("fhr") else "cost-aware"
+
+    df["kind"] = df.policy.map(_kind)
+    KORDER = ["fixed", "ceiling", "cost-aware"]
+    KLAB = {"fixed": r"fixed ($\tau{=}0.80$)", "ceiling": r"ceiling (FHR$\,\leq\,$5%)", "cost-aware": "cost-aware"}
+    KCOL = {"fixed": "#D55E00", "ceiling": "#56B4E9", "cost-aware": "#009E73"}
+    fig, (axa, axb) = plt.subplots(1, 2, figsize=(6.7, 2.6), gridspec_kw={"width_ratios": [1.22, 1]})
+
+    pens = [5.0, 20.0]
+    x = np.arange(len(pens))
+    w = 0.26
+    for i, k in enumerate(KORDER):
+        vals = [df[(df.c_fh == c) & (df.kind == k)].expected_cost.mean() for c in pens]
+        axa.bar(x + (i - 1) * w, vals, w, label=KLAB[k], color=KCOL[k], edgecolor="black", linewidth=0.4)
+        for xi, v in zip(x + (i - 1) * w, vals):
+            axa.text(xi, v + 0.12, f"{v:.2f}", ha="center", va="bottom", fontsize=5.4)
+    axa.axhline(1.0, color="0.35", lw=0.8, ls=(0, (3, 2)))
+    axa.text(x[-1] + 0.40, 1.0, "no-cache\nbaseline", fontsize=5.2, va="center", ha="left", color="0.35")
+    axa.set_xticks(x)
+    axa.set_xticklabels([r"$c_{FH}{=}5$", r"$c_{FH}{=}20$"])
+    axa.set_ylabel("expected cost per query (model calls)")
+    axa.set_ylim(0, 7.3)
+    axa.legend(fontsize=5.6, loc="upper left", handlelength=1.2, borderaxespad=0.3)
+    axa.set_title("(a) a fixed threshold is catastrophic", fontsize=7)
+
+    # (b) the mechanism: the fixed default leaks the same large false-hit rate whatever the
+    # penalty (its threshold never moves), while the principled policies tighten as the
+    # penalty grows. This is why the fixed cost in (a) explodes with the penalty.
+    for i, k in enumerate(KORDER):
+        vals = [100.0 * df[(df.c_fh == c) & (df.kind == k)].fhr.mean() for c in pens]
+        axb.bar(x + (i - 1) * w, vals, w, color=KCOL[k], edgecolor="black", linewidth=0.4)
+        for xi, v in zip(x + (i - 1) * w, vals):
+            axb.text(xi, v + 0.7, f"{v:.0f}", ha="center", va="bottom", fontsize=5.4)
+    axb.set_xticks(x)
+    axb.set_xticklabels([r"$c_{FH}{=}5$", r"$c_{FH}{=}20$"])
+    axb.set_ylabel("served false-hit rate (\\%)")
+    axb.set_ylim(0, 46)
+    axb.set_title("(b) the fixed default keeps leaking", fontsize=7)
+    fig.tight_layout()
+    _save(fig, "fig_calibration")
+
+
+def fig_transfer(_reports=None) -> None:
+    """Cross-domain transfer of the cost-aware threshold (results/calibration_transfer.csv):
+    mean extra cost per query, in model calls, when a threshold tuned on one domain is applied
+    to another, averaged over encoders. A conservative threshold (tuned on the hard adversarial
+    domain) transfers almost free; an aggressive one (tuned on an easy domain) backfires on the
+    hard one."""
+    import pandas as pd
+    df = pd.read_csv(ROOT / "results" / "calibration_transfer.csv")
+    doms = ["qqp", "mrpc", "paws"]
+    DLAB = {"qqp": "Questions", "mrpc": "News", "paws": "Adversarial"}
+    M = np.array([[df[(df.calibrated_on == a) & (df.applied_to == b)].cost_gap.mean()
+                   for b in doms] for a in doms])
+    M = np.clip(M, 0, None)  # a couple of tiny negative gaps -> 0 for the sequential scale
+    fig, ax = plt.subplots(figsize=(3.5, 3.0))
+    im = ax.imshow(M, cmap="Reds", vmin=0, vmax=float(M.max()), aspect="auto")
+    ax.set_xticks(range(3))
+    ax.set_xticklabels([DLAB[d] for d in doms], rotation=18, ha="right")
+    ax.set_yticks(range(3))
+    ax.set_yticklabels([DLAB[d] for d in doms])
+    ax.set_xlabel("applied to")
+    ax.set_ylabel("calibrated on")
+    for i in range(3):
+        for j in range(3):
+            ax.text(j, i, f"{M[i, j]:.2f}", ha="center", va="center",
+                    color="white" if M[i, j] > 0.6 * M.max() else "black", fontsize=8)
+    cb = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    cb.set_label("extra cost / query (model calls)", fontsize=7)
+    fig.tight_layout()
+    _save(fig, "fig_transfer")
+
+
 def main() -> None:
     import argparse
     ap = argparse.ArgumentParser(description="Generate paper figures from reliability reports.")
@@ -323,6 +407,8 @@ def main() -> None:
     fig_coverage_bars(reports)
     fig_heatmap(reports)
     fig_downstream()
+    fig_calibration()
+    fig_transfer()
 
 
 if __name__ == "__main__":
