@@ -1,0 +1,22 @@
+{
+  "title": "When Semantic Caches Lie: False Hits, Downstream Cost, and Calibration in Embedding-Based Caching for Large Language Models",
+  "description": "Code, the labeled cache-equivalence dataset, and reproduction scripts for the study of reliability and cost-aware calibration in embedding-based semantic caching for LLMs. Regenerates every figure and table in the accompanying manuscript on CPU with fixed seeds.",
+  "version": "0.1.0",
+  "upload_type": "software",
+  "creators": [
+    {
+      "name": "Patel, Sunny",
+      "orcid": "0009-0005-3863-7642",
+      "affiliation": "Independent Researcher"
+    }
+  ],
+  "keywords": [
+    "semantic caching",
+    "large language models",
+    "embedding models",
+    "false-hit rate",
+    "calibration",
+    "retrieval-augmented generation"
+  ],
+  "notes": "All rights reserved (see LICENSE). The dataset is derived from the public QQP, MRPC, and PAWS corpora, which retain their own licenses (see NOTICE.md). At deposit time set the Zenodo license/access fields to match the project LICENSE: do NOT accept Zenodo's default CC-BY-4.0. Add the related arXiv DOI as a related identifier once minted."
+}

@@ -1,3 +1,4 @@
+SPDX-License-Identifier: LicenseRef-Proprietary
 Copyright (c) 2026 Sunny Patel. All rights reserved.
 
 This repository contains the manuscript, source code, figures, and dataset for the
@@ -22,7 +23,10 @@ SOURCE CODE
 DATASET
   The labeled cache-equivalence dataset is the author's work, provided for non-commercial
   research use with attribution. Redistribution requires the author's prior written
-  permission.
+  permission. The dataset is DERIVED from third-party corpora (Quora Question Pairs, MRPC,
+  and PAWS) that carry their own licenses; the author claims rights only over the
+  equivalence labels, sampling, and arrangement, not the underlying source text, which
+  remains governed by its original license (see NOTICE.md).
 
 ATTRIBUTION
   Cite this work as specified in CITATION.cff.
