@@ -1,0 +1,26 @@
+% SPDX-License-Identifier: LicenseRef-Proprietary
+% Copyright (c) 2026 Sunny Patel. All rights reserved.
+% Conceptual schematic for the downstream section: where a served false hit corrupts a
+% retrieval-augmented QA pipeline. Drawn in TikZ so the type matches the body, reusing the
+% teaser's vermillion = false-hit colour language.
+\begin{tikzpicture}[font=\footnotesize,>={Stealth[length=4pt]},
+   box/.style={draw,rounded corners=2pt,inner sep=4pt,minimum height=8mm,minimum width=12mm,
+               font=\scriptsize,align=center},
+   fh/.style={draw,rounded corners=2pt,inner sep=3pt,font=\scriptsize,align=center,
+              fhred,fill=fhred!8,text=black},
+   lab/.style={fhred,font=\scriptsize\itshape}]
+  % --- main retrieval-augmented QA pipeline ---
+  \node[box] (q) {question};
+  \node[box,right=8mm of q] (ret) {retrieve};
+  \node[box,right=8mm of ret,fill=neutral!8] (ctx) {context\\passage};
+  \node[box,right=8mm of ctx] (rd) {reader};
+  \node[box,right=8mm of rd,fill=eqgreen!10] (ans) {answer};
+  \draw[->] (q)--(ret); \draw[->] (ret)--(ctx); \draw[->] (ctx)--(rd); \draw[->] (rd)--(ans);
+  % --- two false-hit injection points ---
+  \node[fh,below=9mm of ctx] (fhc) {wrong or truncated\\passage};
+  \node[lab,above=0.5mm of fhc] {context-cache false hit};
+  \draw[->,fhred,thick] (fhc)--(ctx);
+  \node[fh,below=9mm of ans] (fha) {wrong answer\\served};
+  \node[lab,above=0.5mm of fha] {answer-cache false hit};
+  \draw[->,fhred,thick] (fha)--(ans);
+\end{tikzpicture}

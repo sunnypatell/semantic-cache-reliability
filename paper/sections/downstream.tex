@@ -8,10 +8,26 @@ pipeline, on the retrieved context of a retrieval-augmented generator, hands the
 wrong premise; whether the reader recovers is an empirical question, and the answer turns out
 to be mostly no.
 
+\begin{figure}[tbp]
+  \centering
+  \input{figures/fig_downstream_diagram}
+  \caption{\textbf{Where a served false hit corrupts the task.} In a retrieval-augmented
+    question-answering pipeline a false hit can replace the final answer (the answer-cache
+    position) or the passage the reader sees (the context-cache position). We inject at both,
+    and at a milder truncation of the passage, and measure the end-to-end cost
+    (\cref{fig:downstream}).}
+  \Description{A left-to-right pipeline of five boxes: question, retrieve, context passage,
+    reader, answer. Two vermillion arrows point up into the pipeline: one labeled
+    context-cache false hit feeding a wrong or truncated passage into the context-passage box,
+    and one labeled answer-cache false hit feeding a wrong answer into the answer box.}
+  \label{fig:dsdiagram}
+\end{figure}
+
 \paragraph{Protocol.}
 We inject false hits into an extractive question-answering reader and measure end-to-end
 token $F_1$ against the reference answers. For each test question the reader runs on its
-correct context and on three faulted inputs that place a false hit at different points: a
+correct context and on three faulted inputs that place a false hit at different
+points~(\cref{fig:dsdiagram}): a
 \emph{wrong answer} served directly (the answer-cache position, where a different question's
 stored answer is returned verbatim), a \emph{wrong passage} fed to the reader (the
 context-cache position, where a different question's passage is retrieved), and a
