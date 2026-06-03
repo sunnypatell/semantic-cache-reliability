@@ -51,7 +51,7 @@ src/cacherel/     Python package: embeddings, cache-reliability metrics, calibra
 experiments/      Runnable scripts (reliability, calibration, downstream, figures, tables, run_all)
 data/             Labeled cache-equivalence pairs (processed) + provenance; raw data is gitignored
 results/          Generated per-(domain, encoder) reports and summary CSVs
-research/          Conventions knowledge base, decision record, preregistration
+research/          Preregistration and analysis plan
 tests/            Unit tests for metrics and statistics
 ```
 

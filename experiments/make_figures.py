@@ -2,7 +2,7 @@
 # Copyright (c) 2026 Sunny Patel. All rights reserved.
 """Generate every figure in the paper from the saved reliability reports.
 
-Design follows research/CONVENTIONS.md: vector PDF output with fonts matched to the
+Design: vector PDF output with fonts matched to the
 paper body (XCharter via matplotlib usetex, with a graceful serif fallback if a TeX
 render fails), an Okabe-Ito colorblind-safe palette, spare Tufte-leaning axes, and a
 high-DPI PNG companion for each figure so the result can be inspected by eye.
