@@ -7,12 +7,14 @@ question-duplication, and we read them as cache-equivalence. The two come apart 
 edges. Two duplicate questions can warrant slightly different answers in context, and two
 non-paraphrases can occasionally share an answer. We accept this gap deliberately, because
 the alternative, bespoke answer-equivalence annotation at scale, would trade a transparent,
-reproducible label for a private one. The direction of the bias also works in our favor for
-the central claim: \mbox{PAWS} pairs are labeled by humans as \emph{non}-paraphrases despite
-near-identical wording, so counting a high-similarity \mbox{PAWS} non-paraphrase as a
-potential false hit is conservative, not generous. The numbers should be read as the
-reliability of the similarity proxy against a human notion of sameness, which is the proxy a
-deployed cache actually relies on.
+reproducible label for a private one. We do not claim the residual bias favors our thesis; it
+could run either way, since a labeled non-paraphrase may occasionally admit the same answer
+(inflating the measured rate) while a labeled paraphrase may need a different one in context
+(deflating it). The claim is narrower: the labels track a public, reproducible notion of
+sameness, and the adversarial domain is built to isolate exactly the case a similarity cache
+cannot resolve, near-identical wording with divergent meaning. The numbers should be read as
+the reliability of the similarity proxy against that human notion of sameness, which is the
+proxy a deployed cache actually relies on.
 
 \paragraph{Internal validity.}
 Cosine scores are not comparable across encoders, so every cross-encoder statement uses
@@ -29,13 +31,19 @@ read the false-hit/coverage frontier, and calibrate the threshold to the measure
 designed the study so that re-running it on a new encoder is a single command. The
 adversarial domain is intentionally a worst case rather than an average one; real traffic
 will sit between the news and adversarial frontiers, and where it sits is itself something a
-deployment can measure with this protocol.
+deployment can measure with this protocol. Coverage is reported over balanced labeled pairs, so
+the absolute hit rate a live system sees will depend on how much of its traffic is genuinely
+reusable; the transferable object is the shape of the false-hit/coverage trade-off at a given
+ceiling, not the single coverage number.
 
 \paragraph{Conclusion validity.}
-All intervals are $95\%$ bias-corrected and accelerated bootstrap intervals over pairs, the
-many comparisons are corrected for the false discovery rate, and the analysis plan was
-preregistered before the main run. Effect sizes accompany the significance tests so that a
-reliable difference is not mistaken for a large one.
+All intervals are $95\%$ bias-corrected and accelerated bootstrap intervals over pairs.
+Cross-encoder comparisons use a paired bootstrap over the shared pairs and are corrected for
+the false discovery rate across the comparison family with the Benjamini--Hochberg procedure;
+the lexical-versus-neural gaps on the adversarial domain, for instance, hold at a corrected
+$p \le 0.003$. We report the size of each difference next to its test, so that a reliable
+difference is not mistaken for a large one. The analysis plan, the primary metric, and the
+sample sizes were fixed before the main run and are released with the code.
 
 \section{Limitations}
 \label{sec:limitations}
@@ -49,7 +57,10 @@ never fires on them; a two-tier system simply adds our semantic layer on top of 
 layer, so our frontier is the part that governs its risk. The downstream cost in
 \cref{sec:downstream} comes from controlled fault injection rather than from a production
 incident log, and we report it under several injection models to show the conclusion does
-not hinge on one.
+not hinge on one. The wrong-passage condition injects an unrelated passage, which is harsher
+than the near-duplicate a real false hit would serve, so its cost is best read as an upper
+bound; the truncated-passage condition brackets the gentler end, and a real false hit sits
+between them.
 
 \section{Broader impact}
 \label{sec:impact}

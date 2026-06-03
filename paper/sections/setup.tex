@@ -69,8 +69,9 @@ and large \mbox{E5} models~\cite{wang2022e5}, and the base and large \mbox{BGE}
 models~\cite{xiao2023cpack}. Each model is used in its recommended configuration for
 symmetric similarity, and exact identifiers and revisions are recorded in the model
 cards (\cref{app:modelcards}). A lexical \mbox{TF-IDF} cosine serves as a non-neural
-control, which isolates how much of the cache's behavior comes from learned semantics
-rather than word overlap.
+control, fit unsupervised on word unigrams and bigrams of the pair text with no use of the
+labels, which isolates how much of the cache's behavior comes from learned semantics rather
+than word overlap.
 
 \subsection{Metrics}
 Two prompts in a labeled pair give one similarity score and one equivalence label, so a
@@ -95,4 +96,5 @@ approximation. Differences between methods on a shared set use a paired bootstra
 the many comparisons across encoders, domains, and thresholds are corrected for multiple
 testing with the Benjamini--Hochberg procedure~\cite{benjamini1995fdr}; we report effect
 sizes alongside every test~\cite{dror2018hitchhiker}. The analysis plan, the primary
-metric, and the sample sizes were preregistered before the main run.
+metric, and the sample sizes were fixed before the main run in a plan released with the code
+(\cref{app:prereg}).

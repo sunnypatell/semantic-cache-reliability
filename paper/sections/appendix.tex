@@ -13,6 +13,7 @@ code so that the numbers reproduce against fixed checkpoints.
     \caption{The six audited encoders. Dimensions and parameter counts are the published
       values for each checkpoint.}
     \label{tab:modelcards}
+    \begingroup\small
     \begin{tabular}{l r r l l}
       \toprule
       Model & Params (M) & Dim & License & Hugging Face identifier \\
@@ -25,6 +26,7 @@ code so that the numbers reproduce against fixed checkpoints.
       BGE-large   & 335.0 & 1024 & MIT        & \texttt{BAAI/bge-large-en-v1.5} \\
       \bottomrule
     \end{tabular}
+    \endgroup
   \end{threeparttable}
 \end{table}
 
@@ -66,12 +68,16 @@ local; no paid API is used for the reliability study). A single entry point repr
 full pipeline: build the labeled set, score it with each encoder, compute the bootstrap
 intervals, and render the figures.
 
-\section{Preregistration}
+\section{Pre-specified analysis plan}
 \label{app:prereg}
 
-Before the main run we registered the research questions, the primary metric (\prauc{} under
-class imbalance, with the false-hit/coverage frontier as the operating-point view), the
-encoders and domains, the sample size of \mbox{2500} pairs per domain, the bootstrap
-procedure and the multiple-comparison correction, and the rule that all cross-encoder
-comparison would use threshold-free metrics. Deviations from the plan, if any, are reported
-with their rationale in the released materials.
+Before the main run we fixed an analysis plan, released with the code, that named the research
+questions, the primary metric (\prauc{} under class imbalance, with the false-hit/coverage
+frontier as the operating-point view), the encoders and domains, the sample size of
+\mbox{2500} pairs per domain, the bootstrap procedure and the multiple-comparison correction,
+and the rule that all cross-encoder comparison would use threshold-free metrics. This is a
+self-recorded plan in the released materials, not a third-party registration. The sample of
+\mbox{2500} pairs per domain gives several hundred labeled examples per class in every
+encoder--domain cell, which keeps the bootstrap interval on the primary metric narrow,
+typically within about $\pm 0.03$ \prauc{} (\cref{tab:separability}). Deviations from the plan,
+if any, are reported with their rationale alongside the code.

@@ -16,9 +16,12 @@ correct context and on three faulted inputs that place a false hit at different 
 stored answer is returned verbatim), a \emph{wrong passage} fed to the reader (the
 context-cache position, where a different question's passage is retrieved), and a
 \emph{truncated passage} (a milder corruption of the same position). Because each question is
-faulted independently with probability $p$, end-to-end $F_1$ at injected false-hit rate $p$ is
-the exact mixture $(1-p)\,F_1^{\text{correct}} + p\,F_1^{\text{fault}}$, which we report for
-$p \in \{1,2,5,10\}\%$ over $400$ questions with a fixed reader.
+faulted independently with probability $p$ and carries at most one injected fault, the expected
+end-to-end $F_1$ at injected false-hit rate $p$ is, by linearity of expectation, the exact
+mixture $(1-p)\,F_1^{\text{correct}} + p\,F_1^{\text{fault}}$. We compute it from the two
+measured endpoints over $400$ questions with a fixed reader and report it for
+$p \in \{1,2,5,10\}\%$; the form is an accounting identity over independent injections, not an
+assumption about errors compounding across the pipeline.
 
 \paragraph{Findings.}
 The reader scores $F_1 = 0.79$ on correct context. \Cref{fig:downstream} shows what a false

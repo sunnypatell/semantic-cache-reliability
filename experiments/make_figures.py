@@ -101,7 +101,7 @@ def fig_frontier(reports) -> None:
     A vertical guide marks the 1% false-hit ceiling.
     """
     encs = _encoders_present(reports)
-    fig, axes = plt.subplots(1, len(DOMAIN_ORDER), figsize=(6.9, 2.4), sharey=True)
+    fig, axes = plt.subplots(1, len(DOMAIN_ORDER), figsize=(6.9, 2.7), sharey=True)
     for ax, dom in zip(axes, DOMAIN_ORDER):
         for enc in encs:
             rep = reports.get((dom, enc))
@@ -119,14 +119,18 @@ def fig_frontier(reports) -> None:
         ax.set_xlim(0, 0.5)
         ax.set_ylim(0, 1)
     axes[0].set_ylabel("coverage")
-    axes[-1].legend(loc="upper right", fontsize=6, handlelength=1.2, borderpad=0.3)
-    fig.tight_layout()
+    # Shared legend below the panels so it never occludes the curves (the PAWS panel
+    # fills its upper-right corner, where a per-panel legend would sit).
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=len(encs), fontsize=6.5,
+               frameon=False, handlelength=1.4, columnspacing=1.0, handletextpad=0.5)
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
     _save(fig, "fig_frontier")
 
 
 def fig_pr_curves(reports) -> None:
     encs = _encoders_present(reports)
-    fig, axes = plt.subplots(1, len(DOMAIN_ORDER), figsize=(6.9, 2.4), sharey=True)
+    fig, axes = plt.subplots(1, len(DOMAIN_ORDER), figsize=(6.9, 2.7), sharey=True)
     for ax, dom in zip(axes, DOMAIN_ORDER):
         base = None
         for enc in encs:
@@ -144,8 +148,10 @@ def fig_pr_curves(reports) -> None:
         ax.set_xlim(0, 1)
         ax.set_ylim(0, 1.02)
     axes[0].set_ylabel("precision")
-    axes[-1].legend(loc="lower left", fontsize=6, handlelength=1.2, borderpad=0.3)
-    fig.tight_layout()
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=len(encs), fontsize=6.5,
+               frameon=False, handlelength=1.4, columnspacing=1.0, handletextpad=0.5)
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
     _save(fig, "fig_pr_curves")
 
 

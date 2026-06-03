@@ -31,10 +31,14 @@ Scale buys little: moving from E5-small to E5-large raises \mbox{PAWS} \prauc{} 
 and the \mbox{BGE} base-to-large gain is $0.04$. Third, and most telling, the lexical control
 inverts the order. \mbox{TF-IDF} trails the neural encoders badly on questions, $0.49$
 against $0.74$ to $0.78$, yet on the adversarial domain it \emph{outscores every neural
-encoder}, $0.66$ against at most $0.62$. Word-scrambling defeats the semantics the neural
-models encode, while the bigram structure the lexical model reads survives it. The very
-property that makes an embedding useful, insensitivity to surface form, is what makes it
-blind to an adversarial paraphrase.
+encoder}, $0.66$ against at most $0.62$. The inversion is not a sampling artifact. A paired
+bootstrap over the shared pairs puts \mbox{TF-IDF}'s \prauc{} above every neural encoder by
+$0.04$ to $0.12$ and its \rocauc{} by $0.06$ to $0.13$, and each of the twelve gaps survives a
+Benjamini--Hochberg correction across the comparison family (largest corrected $p = 0.003$).
+Word-scrambling defeats the semantics the neural models encode, while the bigram structure the
+lexical model reads survives it. The very
+property that makes an embedding useful, its insensitivity to surface form, is also what
+blinds it to an adversarial paraphrase.
 
 \begin{figure}[t]
   \centering
@@ -92,8 +96,8 @@ one, and there is no threshold that makes the adversarial domain both safe and u
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/fig_coverage_bars}
-  \caption{Coverage achievable at a $1\%$ false-hit ceiling, per encoder and domain. Bars
-    are $95\%$ bootstrap intervals. Even the strongest encoder serves only a small share of
-    questions and news under the ceiling, and almost nothing on the adversarial domain.}
+  \caption{Coverage achievable at a $1\%$ false-hit ceiling, per encoder and domain. Error
+    bars are $95\%$ bootstrap intervals. Even the strongest encoder serves only a small share
+    of questions and news under the ceiling, and almost nothing on the adversarial domain.}
   \label{fig:coverage}
 \end{figure}

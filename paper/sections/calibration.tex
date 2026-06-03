@@ -20,9 +20,11 @@ correctness-bounding caches such as verified caching~\cite{schroeder2025vcache}.
   \label{eq:cost}
 \end{equation}
 where a correct hit saves a call, a miss costs one, and a false hit costs $c_{\mathrm{fh}}$
-calls, a penalty that \cref{sec:downstream} shows is large because a false hit destroys most
-of the served answer. The only free input is this penalty, so the policy needs no per-prompt
-online feedback; we report results across $c_{\mathrm{fh}} \in \{5, 20\}$.
+calls. The penalty is a deployment choice that folds the eventual recompute together with the
+reputational and task cost of a wrong answer, which \cref{sec:downstream} shows is large. It is
+the only free input, so the policy needs no per-prompt online feedback. We report a plausible
+bracket, $c_{\mathrm{fh}} \in \{5, 20\}$; the conclusions below are not an artifact of one
+penalty, because a larger penalty only pushes the chosen threshold higher, as it should.
 
 \paragraph{Results.}
 The comparison in \cref{tab:calibration} is stark. At a false-hit penalty of
@@ -31,7 +33,9 @@ the always-recompute baseline of $1.0$, because at that threshold the cache fire
 queries while leaking a $39\%$ false-hit rate. A cache run on a fixed default is not a small
 loss; it is several times more expensive than not caching at all. Both principled policies
 avoid the disaster by retreating to a near-saturating threshold, and both land at almost
-exactly the baseline cost ($0.99$). The cache earns a genuine saving only where the domain
+exactly the baseline cost ($0.99$). The picture is not an artifact of the high penalty: even at
+the milder $c_{\mathrm{fh}}=5$ the fixed default still loses, at $1.8\times$ the no-cache
+baseline, while the principled policies stay at or below it. The cache earns a genuine saving only where the domain
 allows it: on news the cost-aware policy holds the false-hit rate near zero while still
 serving enough to cut expected cost by about $7\%$ for E5-large; on questions it roughly
 breaks even; on the adversarial domain it correctly serves almost nothing, because any
@@ -43,9 +47,10 @@ hand-set error target.
 \paragraph{Transfer.}
 A threshold is only useful if it survives a change of domain, and here it does so in only one
 direction. A conservative threshold calibrated on the adversarial domain, which sits near
-$1.0$, transfers to the easier domains with a cost gap below $0.06$ per query. The reverse is
-ruinous: the $0.97$ threshold that is right for news, applied to adversarial traffic, leaks
-so many false hits that expected cost jumps to $7.1$, a gap of more than six calls per query.
+$1.0$, transfers to the easier domains at a cost gap of at most about $0.07$ per query, and
+under $0.02$ for most encoders. The reverse is ruinous: the $0.97$ threshold that is right for
+news, applied to adversarial traffic, leaks so many false hits that expected cost jumps to
+$7.1$, a gap of more than six calls per query.
 A threshold learned where the cache works cannot be trusted where it does not. The
 recommendation is concrete: calibrate per domain, and when in doubt err toward the
 conservative threshold, because the cost of an over-tight cache is a few missed reuses while
