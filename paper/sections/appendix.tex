@@ -38,10 +38,44 @@ fitting on our pairs.
 operating-point figures: for every method and domain it gives both threshold-free metrics with
 their bootstrap intervals, the precision attainable at three recall targets, and the coverage
 attainable under two false-hit ceilings. The pattern that survives every cut is the adversarial
-column, where neural and lexical methods alike sit near the base rate.
+column, where neural and lexical methods alike sit near the base rate; the precision--recall
+curves behind these numbers are plotted in \cref{fig:prcurves}.
 
 % Generated from results/reliability_summary.csv and the per-cell JSON reports by make_tables.py
 \input{tables/fullresults_table}
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_pr_curves}
+  \caption{Precision--recall curves behind the threshold-free separability of
+    \cref{tab:separability}. Each curve is one encoder and the dashed line is the domain base
+    rate. On the adversarial domain (right) every neural encoder hugs the base rate while the
+    lexical control rides above it, the same inversion the main text reports.}
+  \Description{Three precision-recall panels, one per domain, each with one curve per encoder
+    and a dashed horizontal line at the base rate. On questions and news the neural curves sit
+    well above the base rate; on the adversarial domain the neural curves collapse toward the
+    base rate while the lexical control curve stays above them.}
+  \label{fig:prcurves}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=0.62\linewidth]{figures/fig_transfer}
+  \caption{\textbf{Thresholds transfer only in the conservative direction} (\cref{sec:calibration}).
+    Mean extra cost per query, in model calls, when the cost-aware threshold tuned on one
+    domain (row) is applied to another (column), averaged over encoders at $\cfh=20$. A
+    threshold tuned on the hard adversarial domain transfers to the easier domains almost for
+    free (bottom row); one tuned on an easy domain is too loose for the adversarial one and
+    backfires, adding up to $4.4$ model calls per query (right column). The diagonal is
+    in-domain, zero by construction.}
+  \Description{A three-by-three heatmap with rows labeled by the domain a threshold was
+    calibrated on and columns by the domain it was applied to, shaded by the extra cost in
+    model calls per query. The diagonal is zero. The cell for a news-calibrated threshold
+    applied to the adversarial domain is the darkest at 4.39 and the questions-to-adversarial
+    cell is 0.98, while the bottom row of an adversarial-calibrated threshold stays near zero
+    across the other domains.}
+  \label{fig:transfer}
+\end{figure}
 
 \section{Datasheet for the cache-equivalence set}
 \label{app:datasheet}
