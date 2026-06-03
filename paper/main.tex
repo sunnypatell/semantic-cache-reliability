@@ -141,10 +141,10 @@ equivalent from non-equivalent prompts better than every neural encoder, because
 surface-form insensitivity that makes an embedding useful is what blinds it to a word-scrambled
 paraphrase; even a joint cross-encoder verifier does not recover the case, and a larger encoder
 barely helps. Holding
-the false-hit rate under one percent caps coverage near nine percent on the easiest domain and
-under one percent elsewhere. Under a realistic penalty a fixed threshold costs several times
-more than not caching, while a threshold calibrated to the measured cost recovers near-baseline
-cost but transfers across domains only in the conservative direction. We release the protocol so
+the false-hit rate under one percent caps coverage near nine percent on news and under one
+percent elsewhere. Under a realistic penalty a fixed threshold costs several times more than not
+caching. A threshold calibrated to the measured cost recovers near-baseline cost, but transfers
+across domains only in the conservative direction. We release the protocol so
 that any team can measure this gap on its own encoder and price it into the threshold.
 \end{abstract}
 
