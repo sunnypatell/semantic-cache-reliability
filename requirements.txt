@@ -19,5 +19,5 @@ datasets>=2.19
 pyyaml>=6.0
 tqdm>=4.66
 
-# Multi-model gateway (chat completions for fault-injection responses)
-g4f>=0.3
+# Extractive reader for the downstream fault-injection study (local; no external API)
+transformers>=4.41
