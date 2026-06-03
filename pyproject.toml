@@ -8,8 +8,26 @@ version = "0.1.0"
 description = "Measurement and calibration for embedding-based semantic caching for LLMs."
 readme = "README.md"
 requires-python = ">=3.10"
-authors = [{ name = "Sunny Patel" }]
+authors = [{ name = "Sunny Patel", email = "sunnypatel124555@gmail.com" }]
 license = { text = "LicenseRef-Proprietary" }
+keywords = [
+  "semantic caching", "large language models", "embedding models",
+  "false-hit rate", "calibration", "retrieval-augmented generation",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: Other/Proprietary License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+[project.urls]
+Homepage = "https://www.sunnypatel.net"
+Repository = "https://github.com/sunnypatell/semantic-cache-reliability"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
