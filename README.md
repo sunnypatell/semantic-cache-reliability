@@ -9,6 +9,7 @@
 
 An independent research project by **Sunny Patel** ([ORCID 0009-0005-3863-7642](https://orcid.org/0009-0005-3863-7642), [sunnypatel.net](https://www.sunnypatel.net)).
 
+[![Paper (PDF)](https://img.shields.io/badge/paper-PDF-b31b1b)](paper/main.pdf)
 [![tests](https://github.com/sunnypatell/semantic-cache-reliability/actions/workflows/tests.yml/badge.svg)](https://github.com/sunnypatell/semantic-cache-reliability/actions/workflows/tests.yml)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20532711-1682D4)](https://doi.org/10.5281/zenodo.20532711)
 [![License: All Rights Reserved](https://img.shields.io/badge/license-All%20Rights%20Reserved-red.svg)](LICENSE)
@@ -17,6 +18,8 @@ An independent research project by **Sunny Patel** ([ORCID 0009-0005-3863-7642](
 <!-- arXiv badge added on posting:
 [![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX)
 -->
+
+📄 **[Read the paper (PDF) →](paper/main.pdf)** &nbsp;·&nbsp; or download it from the [latest release](https://github.com/sunnypatell/semantic-cache-reliability/releases/latest).
 
 > A semantic cache reuses a stored answer whenever a new prompt's embedding is close enough
 > to an earlier one, trading a model call for a lookup. This project asks the question the
